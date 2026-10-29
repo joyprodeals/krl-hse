@@ -3,5 +3,11 @@
  "phase_1": [
   {"reference_doctype": "HSE Work Order", "document_code": "WO", "number_format": ""},
   {"reference_doctype": "HSE Workplace Area", "document_code": "WPAD", "number_format": ""}
+ ],
+ "phase_2": [
+  {"reference_doctype": "HSE Method Statement", "document_code": "MS", "number_format": "", "format_number": "KRL/HSE/MS/01", "format_revision": "01/24"},
+  {"reference_doctype": "HSE HIRA", "document_code": "HIRA", "number_format": "", "format_number": "KRL/HSE/HIRA/1", "format_revision": "01/24"},
+  {"reference_doctype": "HSE SOP", "document_code": "SOP", "number_format": "", "format_number": "KRL/HSE/SOP/1", "format_revision": "01/24"},
+  {"reference_doctype": "HSE JHA", "document_code": "JHA", "number_format": "", "format_number": "KRL/HSE/JHA/1", "format_revision": "01/24"}
  ]
 }

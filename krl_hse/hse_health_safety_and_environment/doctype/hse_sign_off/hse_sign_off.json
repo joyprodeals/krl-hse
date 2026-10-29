@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "action",
+  "from_state",
+  "to_state",
+  "user",
+  "full_name",
+  "signed_on",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "label": "Action",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "from_state",
+   "fieldtype": "Data",
+   "label": "From",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "to_state",
+   "fieldtype": "Data",
+   "label": "To",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "By",
+   "options": "User",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signed_on",
+   "fieldtype": "Datetime",
+   "label": "On",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-29 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE Sign Off",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1
+}

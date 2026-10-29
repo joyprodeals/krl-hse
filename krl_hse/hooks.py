@@ -35,7 +35,10 @@ required_apps = ["erpnext"]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/krl_hse/css/krl_hse.css"
-app_include_js = "/assets/krl_hse/js/hse_branch.js"
+app_include_js = [
+	"/assets/krl_hse/js/hse_branch.js",
+	"/assets/krl_hse/js/hse_controlled_document.js",
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/krl_hse/css/krl_hse.css"
@@ -87,10 +90,10 @@ app_include_js = "/assets/krl_hse/js/hse_branch.js"
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "krl_hse.utils.jinja_methods",
-# 	"filters": "krl_hse.utils.jinja_filters"
-# }
+# Every function in krl_hse/utils/printing.py is available to the print format templates.
+jinja = {
+	"methods": ["krl_hse.utils.printing"],
+}
 
 # Installation
 # ------------
@@ -148,6 +151,13 @@ after_migrate = "krl_hse.setup.install.after_migrate"
 hse_branch_doctypes = [
 	"HSE Work Order",
 	"HSE Workplace Area",
+	"HSE Method Statement",
+]
+
+# Planning documents with revisions and a lifecycle (krl_hse/utils/controlled_document.py). Each
+# must also be in hse_branch_doctypes above. A test fails if one is missed.
+hse_controlled_doctypes = [
+	"HSE Method Statement",
 ]
 
 permission_query_conditions = {

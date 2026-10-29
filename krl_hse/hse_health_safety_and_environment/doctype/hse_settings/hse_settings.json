@@ -15,6 +15,10 @@
   "document_codes",
   "workflow_section",
   "sent_back_state",
+  "approved_state",
+  "superseded_state",
+  "print_section",
+  "internal_document_line",
   "access_section",
   "access_help",
   "all_branch_roles",
@@ -132,6 +136,34 @@
    "label": "Seeded Document Types",
    "read_only": 1,
    "hidden": 1
+  },
+  {
+   "fieldname": "approved_state",
+   "fieldtype": "Data",
+   "label": "Workflow State That Means Approved",
+   "default": "Approved",
+   "reqd": 1,
+   "description": "A controlled document in this state is in force. It cannot be edited; a change is made as a new revision."
+  },
+  {
+   "fieldname": "superseded_state",
+   "fieldtype": "Data",
+   "label": "Workflow State That Means Superseded",
+   "default": "Superseded",
+   "reqd": 1,
+   "description": "The state an approved revision moves to when the next revision is approved"
+  },
+  {
+   "fieldname": "print_section",
+   "fieldtype": "Section Break",
+   "label": "Printing"
+  },
+  {
+   "fieldname": "internal_document_line",
+   "fieldtype": "Data",
+   "label": "Line Printed on Every Format",
+   "default": "This is an internal document and not for circulation",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,

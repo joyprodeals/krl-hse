@@ -76,3 +76,29 @@ def make_user(email, roles, branches=(), first_name="TEST"):
 			{"doctype": "User Permission", "user": email, "allow": "Branch", "for_value": branch}
 		).insert(ignore_permissions=True)
 	return user
+
+
+def make_method_statement(branch, work_order, **kw):
+	values = {"doctype": "HSE Method Statement", "branch": branch, "work_order": work_order}
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)
+
+
+def method_statement_content(work="TEST Slag handling"):
+	"""The least a Method Statement needs before it can be sent for review."""
+	return {
+		"works": [{"work_name": work}],
+		"operations": [{"work": work, "operation": "TEST: position the loader at the pit"}],
+	}
+
+
+def act_on(user, doctype, name, action, **values):
+	"""Apply a workflow action as a user, saving any values first, as the form does."""
+	from frappe.model.workflow import apply_workflow
+
+	frappe.set_user(user)
+	doc = frappe.get_doc(doctype, name)
+	if values:
+		doc.update(values)
+		doc.save()
+	return apply_workflow(doc, action)

@@ -9,7 +9,8 @@ Each phase has a demo, a KRL feedback gate and a sign-off test.
 | Phase | Content | Status |
 |-------|---------|--------|
 | 1 | Settings, document numbering, branches, roles, work order, workplace area, approval workflow | Built |
-| 2 onward | See the "KRL HSE Phased Development Plan" | Not started |
+| 2 | Planning documents: Method Statement (built), HIRA, SOP, JHA, Work Procedure Window | In progress. The Method Statement with approval, revisions and print format is ready to test. |
+| 3 onward | See the "KRL HSE Phased Development Plan" | Not started |
 
 Nothing is hard-coded to KRL. Everything KRL may want to change is a record that can be edited
 in the desk: HSE Settings (prefix, number digits, financial-year start, number format, document
@@ -53,6 +54,35 @@ A site is an ERPNext Branch record. There is no limit on how many. Use **Manage 
 * The **People With Access** list on the Branch form shows who has been given the site, with buttons to
   give or remove it. Roles that see every branch are not listed.
 
+### Controlled documents (Phase 2)
+
+The Method Statement, and later HIRA, SOP and JHA, are controlled documents. They share one base class,
+`krl_hse/utils/controlled_document.py`, and the revision buttons in `public/js/hse_controlled_document.js`.
+A new type is added to `hse_controlled_doctypes` (and `hse_branch_doctypes`) in `hooks.py`.
+
+* A document stays in Draft until it is sent for review. It cannot be sent while incomplete
+  (each type says what is missing in `review_problems`).
+* Approval has levels. The levels are the Workflow of the document type, which KRL can edit in the desk. The
+  Method Statement has three: Branch HSE Head or HSE Officer prepares, Branch Head reviews, HSE Head approves.
+  An approver can send it back, and must say why.
+* An approved document, and a superseded one, cannot be edited or deleted.
+* A change is made with **Revision > Start Revision**. The new revision is its own record (`<number>-R1`), shares
+  the document number, and must say what triggered it and what changed. The approved revision stays in
+  force until the new one is approved, and is then marked Superseded.
+* Every change of state is written to the **Sign-offs** table with the user and the time. "Prepared by",
+  "Reviewed by" and "Approved by" on the print are read from it.
+* Only roles named in the document's workflow see drafts. Everyone else with branch access sees approved documents only.
+* The names of the approved and superseded states, the sent-back state, the format number and revision of each
+  form and the "internal document" line are HSE Settings, not code.
+
+### Print formats
+
+A print format is an HTML template in `hse_health_safety_and_environment/print_format/`, black and white, so it can
+be handed to a client. The header repeats on each page with the format number, revision, document number, issue
+date and revision date. The footer carries the internal-document line and the page number. These come from HSE
+Settings (document code rows, "Printing" section) and from `krl_hse/utils/printing.py`. The PDF needs wkhtmltopdf with
+patched Qt, as on Frappe Cloud. A build without it prints the PDF without the repeated header and footer.
+
 ### Document numbers
 
 `{prefix}/{doc_code}/{branch}/{fy}/{job}/{seq}`, for example `KRL/WPAD/T/2026-27/0003`.
@@ -69,7 +99,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (78 so far)
+# tests (138 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)
@@ -80,6 +110,9 @@ bench --site demo.test execute krl_hse.demo.seed.load            # again, once b
 bench --site demo.test execute krl_hse.demo.seed.clear           # archive
 bench --site demo.test execute krl_hse.demo.seed.clear --kwargs "{'delete': 1}"   # delete
 ```
+
+The demo load also makes one draft Method Statement for each of the two sample jobs. `clear` resets them to Draft
+before it deletes them.
 
 Demo users are `test.<key>@krl-demo.example`, one per role. The sample people and records refer to
 branches by code: J and T carry the two sample jobs, and anything whose code is not on the site is skipped

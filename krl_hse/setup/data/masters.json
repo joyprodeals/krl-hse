@@ -48,5 +48,50 @@
   {"role_name": "Client Representative", "party": "Client"},
   {"role_name": "Client HSE Representative", "party": "Client"},
   {"role_name": "Client HR Representative", "party": "Client"}
+ ],
+ "HSE Revision Trigger": [
+  {"trigger_name": "CAPA Finding", "description": "A corrective or preventive action asks for the change"},
+  {"trigger_name": "Audit Recommendation", "description": "An internal, third-party or regulatory audit recommends the change"},
+  {"trigger_name": "Job Cycle Check Finding", "description": "A job cycle check found a gap against the document"},
+  {"trigger_name": "Client Requirement", "description": "The client has asked for the change"},
+  {"trigger_name": "Management of Change", "description": "A change in work, method, equipment or people"},
+  {"trigger_name": "Other", "description": "Give the reason under What Changed and Why"}
+ ],
+ "HSE Common Work": [
+  {"work_name": "General", "description": "Common equipment for the whole project, for example a bus or tanker"},
+  {"work_name": "Administration", "description": "Common manpower such as accounts, store and management"},
+  {"work_name": "Maint-Fleet", "description": "Maintenance of the fleet"},
+  {"work_name": "Maint-Plant", "description": "Maintenance of the plant"}
+ ],
+ "HSE PPE Item": [
+  {"ppe_name": "Helmet", "is_basic": 1, "sort_order": 1},
+  {"ppe_name": "Shoe", "is_basic": 1, "sort_order": 2},
+  {"ppe_name": "Goggles", "is_basic": 1, "sort_order": 3},
+  {"ppe_name": "FR Jacket (Hot Zone)", "is_basic": 1, "sort_order": 4},
+  {"ppe_name": "Fluorescent Jacket (Non-Hot Zone)", "is_basic": 1, "sort_order": 5},
+  {"ppe_name": "Nose Mask", "is_basic": 1, "sort_order": 6}
+ ],
+ "HSE Emergency Type": [
+  {"type_name": "Fire", "occurs": "At the Workplace"},
+  {"type_name": "Material Handling", "occurs": "At the Workplace"},
+  {"type_name": "Moving Plant and Equipment", "occurs": "At the Workplace"},
+  {"type_name": "Confined Space Rescue", "occurs": "At the Workplace"},
+  {"type_name": "Fall from Height", "occurs": "At the Workplace"},
+  {"type_name": "Medical", "occurs": "At the Workplace"},
+  {"type_name": "Road Accident", "occurs": "At the Workplace"},
+  {"type_name": "Excavation", "occurs": "At the Workplace"},
+  {"type_name": "Toxic Gas Leakage", "occurs": "Within the Vicinity"},
+  {"type_name": "Strike or Riots", "occurs": "Within the Vicinity"},
+  {"type_name": "Fire in the Vicinity", "occurs": "Within the Vicinity"},
+  {"type_name": "Accident in the Vicinity", "occurs": "Within the Vicinity"},
+  {"type_name": "Flood", "occurs": "Natural"},
+  {"type_name": "Thunderstorm", "occurs": "Natural"}
+ ],
+ "HSE Emergency Contact Type": [
+  {"type_name": "Fire Department", "sort_order": 1},
+  {"type_name": "Safety Department", "sort_order": 2},
+  {"type_name": "Security Department", "sort_order": 3},
+  {"type_name": "Ambulance / Hospital", "sort_order": 4},
+  {"type_name": "Police Station", "sort_order": 5}
  ]
 }

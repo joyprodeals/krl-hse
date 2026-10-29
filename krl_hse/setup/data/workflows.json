@@ -24,6 +24,38 @@
     {"state": "Pending Approval", "action": "Send Back", "next_state": "Sent Back",
      "allowed": ["Branch Head", "HSE Head"], "allow_self_approval": 0}
    ]
+  },
+  {
+   "workflow_name": "HSE Method Statement Approval",
+   "document_type": "HSE Method Statement",
+   "states": [
+    {"state": "Draft", "style": "Warning", "doc_status": "0",
+     "allow_edit": ["Branch HSE Head", "HSE Officer", "HSE Head", "HO HSE Team", "System Manager"]},
+    {"state": "Pending Branch Head Review", "style": "Info", "doc_status": "0",
+     "allow_edit": ["Branch Head", "HSE Head", "System Manager"]},
+    {"state": "Pending HSE Head Approval", "style": "Info", "doc_status": "0",
+     "allow_edit": ["HSE Head", "HO HSE Team", "System Manager"]},
+    {"state": "Approved", "style": "Success", "doc_status": "0",
+     "allow_edit": ["System Manager"]},
+    {"state": "Sent Back", "style": "Danger", "doc_status": "0",
+     "allow_edit": ["Branch HSE Head", "HSE Officer", "HSE Head", "HO HSE Team", "System Manager"]},
+    {"state": "Superseded", "style": "Inverse", "doc_status": "0",
+     "allow_edit": ["System Manager"]}
+   ],
+   "transitions": [
+    {"state": "Draft", "action": "Submit for Review", "next_state": "Pending Branch Head Review",
+     "allowed": ["Branch HSE Head", "HSE Officer", "HSE Head", "HO HSE Team"]},
+    {"state": "Sent Back", "action": "Submit for Review", "next_state": "Pending Branch Head Review",
+     "allowed": ["Branch HSE Head", "HSE Officer", "HSE Head", "HO HSE Team"]},
+    {"state": "Pending Branch Head Review", "action": "Review and Forward", "next_state": "Pending HSE Head Approval",
+     "allowed": ["Branch Head", "HSE Head"], "allow_self_approval": 0},
+    {"state": "Pending Branch Head Review", "action": "Send Back", "next_state": "Sent Back",
+     "allowed": ["Branch Head", "HSE Head"], "allow_self_approval": 0},
+    {"state": "Pending HSE Head Approval", "action": "Approve", "next_state": "Approved",
+     "allowed": ["HSE Head", "HO HSE Team"], "allow_self_approval": 0},
+    {"state": "Pending HSE Head Approval", "action": "Send Back", "next_state": "Sent Back",
+     "allowed": ["HSE Head", "HO HSE Team"], "allow_self_approval": 0}
+   ]
   }
  ]
 }

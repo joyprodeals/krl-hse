@@ -127,6 +127,61 @@ AREAS = [
 	),
 ]
 
+METHOD_STATEMENTS = [
+	# One Method Statement left in Draft for each sample work, ready to be sent for review.
+	{
+		"branch": "T",
+		"job_code": "TEST-ATH",
+		"areas": ["TEST Loading Yard", "TEST Workshop"],
+		"works": [
+			{"work_name": "TEST Loading", "description": "TEST: loading trucks in the yard"},
+			{"work_name": "TEST Workshop servicing", "description": "TEST: servicing of loaders"},
+		],
+		"operations": [
+			("TEST Loading", "TEST: inspect the loader and the yard before the shift"),
+			("TEST Loading", "TEST: position the truck at the marked bay"),
+			("TEST Loading", "TEST: load, check the load and release the truck"),
+			("TEST Workshop servicing", "TEST: park the loader, switch off and isolate"),
+			("TEST Workshop servicing", "TEST: service as per the job card"),
+		],
+		"equipment": [
+			("TEST Loading", "TEST Wheel loader", 2),
+			("General", "TEST Crew bus", 1),
+			("Maint-Fleet", "TEST Service van", 1),
+		],
+		"manpower": [
+			("TEST Loading", "TEST Loader Operator", "Worker", 6),
+			("TEST Workshop servicing", "TEST Fitter", "Worker", 3),
+			("Administration", "TEST Store Keeper", "SL", 1),
+		],
+		"ppe": [
+			("TEST Workshop servicing", "Goggles", "TEST: welding goggles"),
+		],
+		"emergency_procedures": [("Fire", "TEST-ERP-FIRE-01"), ("Medical", "TEST-ERP-MED-01")],
+		"emergency_numbers": {
+			"Fire Department": ("TEST-101", "TEST plant fire station"),
+			"Ambulance / Hospital": ("TEST-108", "TEST plant hospital"),
+		},
+	},
+	{
+		"branch": "J",
+		"job_code": "TEST-SLAG",
+		"areas": ["TEST Slag Pit"],
+		"works": [{"work_name": "TEST Slag handling", "description": "TEST: handling of furnace slag"}],
+		"operations": [
+			("TEST Slag handling", "TEST: clear the pit side and place barricades"),
+			("TEST Slag handling", "TEST: load slag into the dumper under supervision"),
+		],
+		"equipment": [("TEST Slag handling", "TEST Excavator", 1)],
+		"manpower": [("TEST Slag handling", "TEST Loader Operator", "Worker", 4)],
+		"ppe": [],
+		"emergency_procedures": [("Fire", "TEST-ERP-FIRE-02")],
+		"emergency_numbers": {},
+	},
+]
+
+DESIGNATIONS = ["TEST Loader Operator", "TEST Fitter", "TEST Store Keeper"]
+
 
 def email_for(key):
 	return f"test.{key}@{DOMAIN}"
@@ -147,6 +202,7 @@ def load(password=None, branches=None, head_office=None):
 	_ensure_users(password, sites)
 	_ensure_work_orders(sites)
 	_ensure_areas(sites)
+	_ensure_method_statements(sites)
 	frappe.db.commit()
 	print(f"Demo data loaded for branches {', '.join(f'{c} ({n})' for c, n in sorted(sites.items()))}.")
 	print(f"Test logins end with @{DOMAIN}.")
@@ -277,12 +333,78 @@ def _ensure_areas(sites):
 		).insert(ignore_permissions=True)
 
 
+def _ensure_method_statements(sites):
+	for values in METHOD_STATEMENTS:
+		if values["branch"] not in sites:
+			print(
+				f"Skipping Method Statement for {values['job_code']}: no branch with code {values['branch']}."
+			)
+			continue
+		work_order = frappe.db.get_value("HSE Work Order", {"job_code": values["job_code"]}, "name")
+		if not work_order:
+			print(f"Skipping Method Statement for {values['job_code']}: the work order is not on this site.")
+			continue
+		if frappe.db.exists("HSE Method Statement", {"work_order": work_order}):
+			continue
+
+		for designation in DESIGNATIONS:
+			if not frappe.db.exists("Designation", designation):
+				frappe.get_doc({"doctype": "Designation", "designation_name": designation}).insert(
+					ignore_permissions=True
+				)
+
+		branch = sites[values["branch"]]
+		areas = frappe.get_all(
+			"HSE Workplace Area",
+			filters={"branch": branch, "area_name": ["in", values["areas"]]},
+			pluck="name",
+		)
+		numbers = [
+			{"contact_type": kind, "phone": phone, "details": details}
+			for kind, (phone, details) in values["emergency_numbers"].items()
+		]
+		frappe.get_doc(
+			{
+				"doctype": "HSE Method Statement",
+				"branch": branch,
+				"work_order": work_order,
+				"areas": [{"area": name} for name in areas],
+				"works": values["works"],
+				"operations": [{"work": w, "operation": text} for w, text in values["operations"]],
+				"equipment": [{"work": w, "equipment": e, "qty": q} for w, e, q in values["equipment"]],
+				"manpower": [
+					{"work": w, "designation": d, "category": c, "qty": q}
+					for w, d, c, q in values["manpower"]
+				],
+				"ppe": [
+					{"activity": activity, "ppe": ppe, "standard": standard}
+					for activity, ppe, standard in values["ppe"]
+				],
+				"emergency_procedures": [
+					{"emergency_type": t, "procedure_reference": ref}
+					for t, ref in values["emergency_procedures"]
+				],
+				# Left empty when the sample gives none, so the starting rows are filled in.
+				**({"emergency_numbers": numbers} if numbers else {}),
+			}
+		).insert(ignore_permissions=True)
+
+
 def clear(delete=0):
 	"""Archive the demo data: cancel work orders, disable areas and users.
 
 	With delete=1 the records are removed for good. Do that only after KRL has approved the clean-up.
 	"""
 	delete = int(delete)
+
+	# Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
+	# cannot be archived, so without delete=1 they are left as they are.
+	if delete:
+		for name in frappe.get_all(
+			"HSE Method Statement", filters={"name_of_work": ["like", "TEST%"]}, pluck="name"
+		):
+			frappe.db.set_value("HSE Method Statement", name, "workflow_state", "Draft")
+			frappe.delete_doc("HSE Method Statement", name, force=True, ignore_permissions=True)
 
 	for name in frappe.get_all("HSE Workplace Area", filters={"area_name": ["like", "TEST%"]}, pluck="name"):
 		if delete:
@@ -306,6 +428,11 @@ def clear(delete=0):
 			frappe.delete_doc("User", user_email, force=True, ignore_permissions=True)
 		else:
 			frappe.db.set_value("User", user_email, "enabled", 0)
+
+	if delete:
+		for designation in DESIGNATIONS:
+			if frappe.db.exists("Designation", designation):
+				frappe.delete_doc("Designation", designation, force=True, ignore_permissions=True)
 
 	frappe.db.commit()
 	print("Demo data deleted." if delete else "Demo data archived.")

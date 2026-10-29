@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "work",
+  "designation",
+  "category",
+  "qty"
+ ],
+ "fields": [
+  {
+   "fieldname": "work",
+   "fieldtype": "Select",
+   "label": "Work",
+   "in_list_view": 1,
+   "columns": 2,
+   "reqd": 1
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "HSE Worker Category",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "label": "Qty",
+   "in_list_view": 1,
+   "columns": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-29 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE MS Manpower",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1
+}

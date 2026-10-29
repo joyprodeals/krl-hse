@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "activity",
+  "ppe",
+  "standard"
+ ],
+ "fields": [
+  {
+   "fieldname": "activity",
+   "fieldtype": "Data",
+   "label": "Type of Activity",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3,
+   "description": "Basic, or the activity the PPE is for, for example gas cutting"
+  },
+  {
+   "fieldname": "ppe",
+   "fieldtype": "Link",
+   "label": "PPE",
+   "options": "HSE PPE Item",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "standard",
+   "fieldtype": "Data",
+   "label": "Standard",
+   "fetch_from": "ppe.standard",
+   "fetch_if_empty": 1,
+   "in_list_view": 1,
+   "columns": 3
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-29 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE MS PPE",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1
+}

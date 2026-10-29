@@ -6,7 +6,9 @@
  "field_order": [
   "reference_doctype",
   "document_code",
-  "number_format"
+  "number_format",
+  "format_number",
+  "format_revision"
  ],
  "fields": [
   {
@@ -16,7 +18,7 @@
    "options": "DocType",
    "reqd": 1,
    "in_list_view": 1,
-   "columns": 3
+   "columns": 2
   },
   {
    "fieldname": "document_code",
@@ -32,8 +34,24 @@
    "fieldtype": "Data",
    "label": "Number Format",
    "in_list_view": 1,
-   "columns": 5,
+   "columns": 2,
    "description": "Leave empty to use the default format"
+  },
+  {
+   "fieldname": "format_number",
+   "fieldtype": "Data",
+   "label": "Format Number",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "For example KRL/HSE/MS/01"
+  },
+  {
+   "fieldname": "format_revision",
+   "fieldtype": "Data",
+   "label": "Format Revision",
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "For example 01/24"
   }
  ],
  "index_web_pages_for_search": 1,

@@ -1,0 +1,65 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "area",
+  "leader_name",
+  "leader_designation",
+  "leader_category",
+  "details"
+ ],
+ "fields": [
+  {
+   "fieldname": "area",
+   "fieldtype": "Link",
+   "label": "Area",
+   "options": "HSE Workplace Area",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "leader_name",
+   "fieldtype": "Data",
+   "label": "Leader",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "leader_designation",
+   "fieldtype": "Data",
+   "label": "Designation",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "leader_category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "HSE Worker Category",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Small Text",
+   "label": "Details",
+   "in_list_view": 1,
+   "columns": 3
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-29 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE MS Area",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1
+}
