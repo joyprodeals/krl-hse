@@ -157,6 +157,11 @@ METHOD_STATEMENTS = [
 		"ppe": [
 			("TEST Workshop servicing", "Goggles", "TEST: welding goggles"),
 		],
+		"sops": [("TEST Loading", "TEST-SOP-LOAD-01"), ("TEST Workshop servicing", "TEST-SOP-SERV-01")],
+		"hazards": [
+			("TEST Loading", "TEST: contact with moving equipment, slip and trip", "TEST-HIRA-LOAD-01"),
+			("TEST Workshop servicing", "TEST: hot surfaces, stored energy", ""),
+		],
 		"emergency_procedures": [("Fire", "TEST-ERP-FIRE-01"), ("Medical", "TEST-ERP-MED-01")],
 		"emergency_numbers": {
 			"Fire Department": ("TEST-101", "TEST plant fire station"),
@@ -175,6 +180,8 @@ METHOD_STATEMENTS = [
 		"equipment": [("TEST Slag handling", "TEST Excavator", 1)],
 		"manpower": [("TEST Slag handling", "TEST Loader Operator", "Worker", 4)],
 		"ppe": [],
+		"sops": [("TEST Slag handling", "TEST-SOP-SLAG-01")],
+		"hazards": [("TEST Slag handling", "TEST: contact with hot metal, fire, dust", "TEST-HIRA-SLAG-01")],
 		"emergency_procedures": [("Fire", "TEST-ERP-FIRE-02")],
 		"emergency_numbers": {},
 	},
@@ -379,6 +386,11 @@ def _ensure_method_statements(sites):
 				"ppe": [
 					{"activity": activity, "ppe": ppe, "standard": standard}
 					for activity, ppe, standard in values["ppe"]
+				],
+				"sops": [{"work": w, "sop_reference": ref} for w, ref in values["sops"]],
+				"hazards": [
+					{"work": w, "hazard_risk": hazard, "reference_document": ref}
+					for w, hazard, ref in values["hazards"]
 				],
 				"emergency_procedures": [
 					{"emergency_type": t, "procedure_reference": ref}

@@ -165,6 +165,36 @@ class TestMethodStatementPrint(MethodStatementTestCase):
 		self.assertEqual(groups[0]["key"], "Basic")
 		self.assertEqual(groups[-1]["key"], "Gas cutting")
 
+	def test_sops_and_hazards_are_printed_work_wise_before_the_emergency_numbers(self):
+		ms = self.new_ms(
+			sops=[
+				{"work": "TEST Slag handling", "sop_reference": "TEST/SOP/01"},
+				{"work": "TEST Slag handling", "sop_reference": "TEST/SOP/02"},
+			],
+			hazards=[
+				{
+					"work": "TEST Slag handling",
+					"hazard_risk": "TEST: hot metal, fire",
+					"reference_document": "TEST/HIRA/01",
+				}
+			],
+		)
+		html = self.printed(ms)
+		for text in ("TEST/SOP/01", "TEST/SOP/02", "TEST: hot metal, fire", "TEST/HIRA/01"):
+			self.assertIn(text, html)
+		sop_heading = html.index("Standard Operating Procedures")
+		hazard_heading = html.index("Potential Hazard and Risks")
+		self.assertLess(html.index("PPE"), sop_heading)
+		self.assertLess(sop_heading, hazard_heading)
+		self.assertLess(hazard_heading, html.index("Emergency Numbers"))
+		self.assertEqual([g["work"] for g in hse_group_by_work(ms, "sops")], ["TEST Slag handling"])
+		self.assertEqual(len(hse_group_by_work(ms, "sops")[0]["rows"]), 2)
+
+	def test_a_print_without_sops_or_hazards_has_no_empty_section(self):
+		html = self.printed(self.new_ms())
+		self.assertNotIn("Standard Operating Procedures", html)
+		self.assertNotIn("Potential Hazard and Risks", html)
+
 	def test_typed_text_is_escaped_in_the_print(self):
 		ms = self.new_ms()
 		# Written straight to the database, as the form would have stripped the tags on save.

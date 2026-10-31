@@ -72,6 +72,9 @@ A new type is added to `hse_controlled_doctypes` (and `hse_branch_doctypes`) in 
 * Every change of state is written to the **Sign-offs** table with the user and the time. "Prepared by",
   "Reviewed by" and "Approved by" on the print are read from it.
 * Only roles named in the document's workflow see drafts. Everyone else with branch access sees approved documents only.
+* The Method Statement carries every section of KRL's format KRL/HSE/MS/01. The Standard Operating Procedures and
+  Potential Hazard and Risks tables hold typed document reference numbers for now. When the SOP and HIRA
+  documents are built, a link to the real record is added beside the typed number, so older paper references still fit.
 * The names of the approved and superseded states, the sent-back state, the format number and revision of each
   form and the "internal document" line are HSE Settings, not code.
 
@@ -99,7 +102,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (138 so far)
+# tests (144 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)

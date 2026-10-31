@@ -32,6 +32,8 @@
   "manpower",
   "hse_requirement_section",
   "ppe",
+  "sops",
+  "hazards",
   "emergency_procedures",
   "emergency_numbers",
   "client_format_section",
@@ -215,6 +217,18 @@
    "fieldtype": "Table",
    "label": "PPE Requirement",
    "options": "HSE MS PPE"
+  },
+  {
+   "fieldname": "sops",
+   "fieldtype": "Table",
+   "label": "Standard Operating Procedures",
+   "options": "HSE MS SOP"
+  },
+  {
+   "fieldname": "hazards",
+   "fieldtype": "Table",
+   "label": "Potential Hazard and Risks",
+   "options": "HSE MS Hazard"
   },
   {
    "fieldname": "emergency_procedures",

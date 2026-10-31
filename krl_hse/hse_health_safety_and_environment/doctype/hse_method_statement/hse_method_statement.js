@@ -2,7 +2,7 @@ const API =
 	"krl_hse.hse_health_safety_and_environment.doctype.hse_method_statement.hse_method_statement";
 
 // Tables whose rows pick one of the works of this document.
-const WORK_TABLES = ["operations", "equipment", "manpower"];
+const WORK_TABLES = ["operations", "equipment", "manpower", "sops", "hazards"];
 
 frappe.ui.form.on("HSE Method Statement", {
 	setup(frm) {

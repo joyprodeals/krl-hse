@@ -9,6 +9,8 @@ WORK_TABLES = (
 	("operations", "Sequence of Operations"),
 	("equipment", "Equipment"),
 	("manpower", "Manpower"),
+	("sops", "Standard Operating Procedures"),
+	("hazards", "Potential Hazard and Risks"),
 )
 
 # Type of Activity written on the basic PPE rows, as on KRL's Method Statement format.

@@ -292,6 +292,56 @@
 	</table>
 	{%- endif %}
 
+	{#- Standard operating procedures #}
+	{%- set sops = hse_group_by_work(doc, "sops") %}
+	{%- if sops %}
+	<table>
+		<thead>
+			<tr><th class="hse-sec" colspan="2">{{ _("Standard Operating Procedures") }}</th></tr>
+			<tr>
+				<th class="hse-col" style="width: 40%;">{{ _("Work") }}</th>
+				<th class="hse-col">{{ _("Standard Operating Procedure Document Reference Number") }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%- for group in sops %}
+				{%- for row in group.rows %}
+				<tr>
+					{%- if loop.first %}<td rowspan="{{ group.rows|length }}">{{ text(group.work) }}</td>{% endif %}
+					<td>{{ text(row.sop_reference) }}</td>
+				</tr>
+				{%- endfor %}
+			{%- endfor %}
+		</tbody>
+	</table>
+	{%- endif %}
+
+	{#- Potential hazards and risks #}
+	{%- set hazards = hse_group_by_work(doc, "hazards") %}
+	{%- if hazards %}
+	<table>
+		<thead>
+			<tr><th class="hse-sec" colspan="3">{{ _("Potential Hazard and Risks") }}</th></tr>
+			<tr>
+				<th class="hse-col" style="width: 26%;">{{ _("Work") }}</th>
+				<th class="hse-col">{{ _("Hazard/Risk") }}</th>
+				<th class="hse-col" style="width: 26%;">{{ _("Reference Document Number") }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%- for group in hazards %}
+				{%- for row in group.rows %}
+				<tr>
+					{%- if loop.first %}<td rowspan="{{ group.rows|length }}">{{ text(group.work) }}</td>{% endif %}
+					<td>{{ text(row.hazard_risk) }}</td>
+					<td>{{ text(row.reference_document) }}</td>
+				</tr>
+				{%- endfor %}
+			{%- endfor %}
+		</tbody>
+	</table>
+	{%- endif %}
+
 	{#- Emergency procedures #}
 	{%- if doc.emergency_procedures %}
 	<table>

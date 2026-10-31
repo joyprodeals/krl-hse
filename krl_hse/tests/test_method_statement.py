@@ -140,6 +140,28 @@ class TestWorkReferences(MethodStatementTestCase):
 		with self.assertRaises(frappe.ValidationError):
 			ms.save()
 
+	def test_sops_and_hazards_pick_their_work_from_the_list_too(self):
+		ms = self.new_ms(
+			sops=[{"work": "TEST Slag handling", "sop_reference": "TEST/SOP/01"}],
+			hazards=[{"work": "General", "hazard_risk": "TEST: slip and trip"}],
+		)
+		self.assertEqual(ms.sops[0].sop_reference, "TEST/SOP/01")
+		self.assertEqual(ms.hazards[0].work, "General")
+		with self.assertRaises(frappe.ValidationError):
+			self.new_ms(sops=[{"work": "TEST Not a work", "sop_reference": "TEST/SOP/02"}])
+		with self.assertRaises(frappe.ValidationError):
+			self.new_ms(hazards=[{"work": "TEST Not a work", "hazard_risk": "TEST: fire"}])
+
+	def test_an_sop_row_needs_its_reference_and_a_hazard_row_its_hazard(self):
+		with self.assertRaises(frappe.ValidationError):
+			self.new_ms(sops=[{"work": "TEST Slag handling", "sop_reference": ""}])
+		with self.assertRaises(frappe.ValidationError):
+			self.new_ms(hazards=[{"work": "TEST Slag handling", "hazard_risk": ""}])
+
+	def test_the_reference_document_of_a_hazard_is_optional(self):
+		ms = self.new_ms(hazards=[{"work": "TEST Slag handling", "hazard_risk": "TEST: dust"}])
+		self.assertFalse(ms.hazards[0].reference_document)
+
 	def designation(self):
 		if not frappe.db.exists("Designation", "TEST Operator"):
 			frappe.get_doc({"doctype": "Designation", "designation_name": "TEST Operator"}).insert()
@@ -321,6 +343,23 @@ class TestRevisions(MethodStatementTestCase):
 		self.assertEqual(str(rev.first_issue_date), str(ms.first_issue_date))
 		self.assertEqual(len(rev.works), len(ms.works))
 		self.assertEqual([s.action for s in rev.sign_offs], ["Prepared"])
+
+	def test_a_revision_carries_the_sops_and_hazards(self):
+		ms = self.approve(
+			self.new_ms(
+				sops=[{"work": "TEST Slag handling", "sop_reference": "TEST/SOP/01"}],
+				hazards=[
+					{
+						"work": "TEST Slag handling",
+						"hazard_risk": "TEST: fire",
+						"reference_document": "TEST/HIRA/01",
+					}
+				],
+			)
+		)
+		rev = self.revise(ms)
+		self.assertEqual([r.sop_reference for r in rev.sops], ["TEST/SOP/01"])
+		self.assertEqual([r.hazard_risk for r in rev.hazards], ["TEST: fire"])
 
 	def test_the_approved_revision_stays_in_force_until_the_new_one_is_approved(self):
 		ms = self.approve(self.new_ms())
