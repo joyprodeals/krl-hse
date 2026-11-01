@@ -291,6 +291,103 @@ HIRAS = [
 	},
 ]
 
+# One Draft SOP for the approved Method Statement of each sample work. A hazard is (hazard, mitigation,
+# HIRA line), the line being filled only when the work has a HIRA. A step is (activity, requirements,
+# hazard and impact, who, how, remarks). The distribution is (recipient, user key, copies).
+SOPS = [
+	{
+		"job_code": "TEST-SLAG",
+		"title": "TEST Hot slag loading",
+		"work": "TEST Slag handling",
+		"area": "TEST Slag Pit",
+		"purpose": "TEST: load hot slag into the dumper without injury or fire.",
+		"scope": "TEST: all slag loading at the slag pit.",
+		"applicable_to": "TEST: slag pit crew, supervisors and dumper drivers",
+		"definitions": "TEST: hot slag is slag that has not finished its cooling time.",
+		"annexure": "TEST: cooling-time chart and pit layout drawing",
+		"hazards": [
+			("TEST: splash of hot slag on a worker", "TEST: load only after the cooling time is over", "L1"),
+			(
+				"TEST: splash of hot slag on a worker",
+				"TEST: heat-resistant suit and face shield for everyone at the pit",
+				"L1",
+			),
+			("TEST: breathing in dust", "TEST: water sprinkling during loading", "L2"),
+		],
+		"rules": [
+			("Do", "TEST: confirm the cooling time with the shift in-charge before loading"),
+			("Do", "TEST: stay behind the barricade until the excavator stops"),
+			("Don't", "TEST: do not stand under the excavator bucket"),
+			("Don't", "TEST: do not load into a damaged dumper"),
+		],
+		"steps": [
+			(
+				"TEST: clear the pit side and place barricades",
+				"TEST: barricades and signs available",
+				"TEST: people too close to the pit",
+				"TEST Supervisor",
+				"TEST: barricade the pit side, post a banksman",
+				"",
+			),
+			(
+				"TEST: check the cooling time",
+				"TEST: cooling-time chart",
+				"TEST: splash of hot slag",
+				"TEST Supervisor",
+				"TEST: read the chart, record the time in the log",
+				"TEST: Annexure 1",
+			),
+			(
+				"TEST: load the slag into the dumper",
+				"TEST: dumper inspected",
+				"TEST: spill, dust, fire",
+				"TEST Excavator operator",
+				"TEST: load in layers, sprinkle water, keep the bucket low",
+				"",
+			),
+		],
+		"distribution": [("TEST Stores", "store_t", 1), ("TEST Site Supervisor", "site_sup_t", 2)],
+	},
+	{
+		"job_code": "TEST-ATH",
+		"title": "TEST Wheel loader operation in the yard",
+		"work": "TEST Loading",
+		"area": "TEST Loading Yard",
+		"purpose": "TEST: move the wheel loader in the yard without hitting people or equipment.",
+		"scope": "TEST: every loader movement in the loading yard.",
+		"applicable_to": "TEST: loader operators, banksmen and yard supervisors",
+		"definitions": "TEST: banksman is the person who guides the loader when it reverses.",
+		"annexure": "",
+		"hazards": [
+			("TEST: moving vehicle close to people", "TEST: a banksman for every reversing move", "L1"),
+			("TEST: moving vehicle close to people", "TEST: reverse alarm and horn working", "L1"),
+		],
+		"rules": [
+			("Do", "TEST: walk around the loader before starting"),
+			("Don't", "TEST: do not carry a passenger on the loader"),
+		],
+		"steps": [
+			(
+				"TEST: inspect the loader before the shift",
+				"TEST: checklist",
+				"TEST: defective brakes or alarm",
+				"TEST Loader operator",
+				"TEST: complete the checklist, report defects",
+				"",
+			),
+			(
+				"TEST: reverse with a banksman",
+				"TEST: trained banksman",
+				"TEST: the loader hits a person",
+				"TEST Banksman",
+				"TEST: eye contact, agreed hand signals",
+				"",
+			),
+		],
+		"distribution": [("TEST Yard Supervisor", "site_sup_t", 1)],
+	},
+]
+
 DESIGNATIONS = ["TEST Loader Operator", "TEST Fitter", "TEST Store Keeper"]
 
 
@@ -315,6 +412,7 @@ def load(password=None, branches=None, head_office=None):
 	_ensure_areas(sites)
 	_ensure_method_statements(sites)
 	_ensure_hiras(sites)
+	_ensure_sops(sites)
 	frappe.db.commit()
 	print(f"Demo data loaded for branches {', '.join(f'{c} ({n})' for c, n in sorted(sites.items()))}.")
 	print(f"Test logins end with @{DOMAIN}.")
@@ -587,6 +685,100 @@ def _ensure_hiras(sites):
 		).insert(ignore_permissions=True)
 
 
+def _ensure_sops(sites):
+	"""A Draft SOP for each sample work whose Method Statement has been approved.
+
+	Like the HIRA, a SOP needs an approved Method Statement, so it is made the next time this runs
+	after the Method Statement has been approved. Its hazards point to the HIRA of the same work when
+	one exists.
+	"""
+	from frappe.utils import add_months, nowdate
+
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	for values in SOPS:
+		work_order = frappe.db.get_value("HSE Work Order", {"job_code": values["job_code"]}, "name")
+		if not work_order:
+			print(f"Skipping SOP for {values['job_code']}: the work order is not on this site.")
+			continue
+
+		# The approved Method Statement of this job that has the sample work among its works.
+		with_work = frappe.get_all(
+			"HSE MS Work",
+			filters={"parenttype": "HSE Method Statement", "work_name": values["work"]},
+			pluck="parent",
+		)
+		candidates = (
+			frappe.get_all(
+				"HSE Method Statement",
+				filters={
+					"name": ("in", with_work),
+					"work_order": work_order,
+					"workflow_state": get_approved_state(),
+				},
+				fields=["name", "branch"],
+				order_by="creation asc",
+			)
+			if with_work
+			else []
+		)
+		# Prefer the one that has a HIRA, so the hazards can point to its lines.
+		ms = next((c for c in candidates if frappe.db.exists("HSE HIRA", {"method_statement": c.name})), None)
+		ms = ms or (candidates[0] if candidates else None)
+		if not ms:
+			print(
+				f"Skipping SOP for {values['job_code']}: no approved Method Statement has the work {values['work']}. "
+				"Approve one, then run the load again."
+			)
+			continue
+		if frappe.db.exists("HSE SOP", {"branch": ms.branch, "sop_title": values["title"]}):
+			continue
+
+		hira = frappe.db.get_value("HSE HIRA", {"method_statement": ms.name})
+		area = frappe.db.get_value("HSE Workplace Area", {"branch": ms.branch, "area_name": values["area"]})
+		frappe.get_doc(
+			{
+				"doctype": "HSE SOP",
+				"branch": ms.branch,
+				"method_statement": ms.name,
+				"sop_title": values["title"],
+				"area": area,
+				"purpose": values["purpose"],
+				"scope": values["scope"],
+				"applicable_to": values["applicable_to"],
+				"definitions": values["definitions"],
+				"annexure": values["annexure"],
+				"validity_date": add_months(nowdate(), 12),
+				"works": [{"work": values["work"]}],
+				"hazards": [
+					{
+						"hazard": hazard,
+						"mitigation": mitigation,
+						"hira": hira if (hira and line) else None,
+						"hira_line": line if hira else None,
+					}
+					for hazard, mitigation, line in values["hazards"]
+				],
+				"rules": [{"kind": kind, "rule": rule} for kind, rule in values["rules"]],
+				"steps": [
+					{
+						"activity": activity,
+						"requirements": requirements,
+						"hazard_impact": hazard_impact,
+						"responsibility": who,
+						"method": how,
+						"remarks": remarks,
+					}
+					for activity, requirements, hazard_impact, who, how, remarks in values["steps"]
+				],
+				"distribution": [
+					{"recipient": recipient, "user": email_for(key), "copies": copies}
+					for recipient, key, copies in values["distribution"]
+				],
+			}
+		).insert(ignore_permissions=True)
+
+
 def clear(delete=0):
 	"""Archive the demo data: cancel work orders, disable areas and users.
 
@@ -594,11 +786,11 @@ def clear(delete=0):
 	"""
 	delete = int(delete)
 
-	# HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
+	# SOPs, HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
 	# cannot be archived, so without delete=1 they are left as they are.
 	if delete:
-		# A HIRA goes before the Method Statement it belongs to.
-		for doctype in ("HSE HIRA", "HSE Method Statement"):
+		# A SOP and a HIRA go before the Method Statement they belong to.
+		for doctype in ("HSE SOP", "HSE HIRA", "HSE Method Statement"):
 			for name in frappe.get_all(doctype, filters={"name_of_work": ["like", "TEST%"]}, pluck="name"):
 				frappe.db.set_value(doctype, name, "workflow_state", "Draft")
 				frappe.delete_doc(doctype, name, force=True, ignore_permissions=True)

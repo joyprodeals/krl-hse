@@ -305,11 +305,28 @@ def planning_rules():
 	}
 
 
+def _review_state(doctype, name):
+	"""Review status and date of an approved document that is reviewed on a schedule."""
+	from krl_hse.utils.review import review_date_field, review_status_for
+
+	field = review_date_field(doctype)
+	if not field:
+		return None
+	state, date = frappe.db.get_value(doctype, name, ["workflow_state", field])
+	if state != get_approved_state() or not date:
+		return None
+	# Worked out now rather than read, so it is right even before the daily job has run.
+	return {"review_status": review_status_for(date), "review_date": str(date)}
+
+
 @frappe.whitelist()
 def revision_status(doctype, name):
 	"""For the form: where the record stands among its revisions, and whether the user can revise it."""
 	frappe.has_permission(doctype, "read", doc=name, throw=True)
 	status = get_revision_status(doctype, name)
+	review = _review_state(doctype, name)
+	if review:
+		status.update(review)
 	status["can_revise"] = bool(
 		status["is_latest"]
 		and frappe.db.get_value(doctype, name, "workflow_state") == get_approved_state()

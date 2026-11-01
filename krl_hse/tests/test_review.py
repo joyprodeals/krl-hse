@@ -287,3 +287,35 @@ class TestReminders(ReviewTestCase):
 		frappe.db.set_value("User", OTHER_HEAD, "enabled", 0)
 		self.addCleanup(frappe.db.set_value, "User", OTHER_HEAD, "enabled", 1)
 		self.assertNotIn(OTHER_HEAD, reminder_recipients("TEST Jharsuguda"))
+
+
+class TestScreenSupport(ReviewTestCase):
+	def test_the_form_is_told_when_an_approved_document_is_due(self):
+		from krl_hse.utils.controlled_document import revision_status
+
+		sop = self.approved_sop(days_left=10)
+		frappe.set_user("Administrator")
+		status = revision_status(DOCTYPE, sop.name)
+		self.assertEqual(status["review_status"], DUE)
+		self.assertEqual(status["review_date"], str(add_days(nowdate(), 10)))
+
+	def test_the_form_is_told_the_truth_before_the_daily_job_has_run(self):
+		from krl_hse.utils.controlled_document import revision_status
+
+		sop = self.approved_sop(days_left=-1)
+		frappe.set_user("Administrator")
+		self.assertNotEqual(self.status(DOCTYPE, sop.name), OVERDUE)
+		self.assertEqual(revision_status(DOCTYPE, sop.name)["review_status"], OVERDUE)
+
+	def test_a_draft_has_no_review_state_on_the_form(self):
+		from krl_hse.utils.controlled_document import revision_status
+
+		sop = self.new_sop()
+		frappe.set_user("Administrator")
+		self.assertNotIn("review_status", revision_status(DOCTYPE, sop.name))
+
+	def test_a_new_sop_form_starts_with_the_basic_ppe(self):
+		from krl_hse.hse_health_safety_and_environment.doctype.hse_sop.hse_sop import new_document_defaults
+
+		basic = frappe.get_all("HSE PPE Item", filters={"is_basic": 1}, pluck="name")
+		self.assertEqual(sorted(r["ppe"] for r in new_document_defaults()["basic_ppe"]), sorted(basic))

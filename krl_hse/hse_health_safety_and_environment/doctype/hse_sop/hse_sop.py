@@ -31,13 +31,8 @@ class HSESOP(MethodStatementDocument):
 		"""A new SOP starts with the basic PPE, as a new Method Statement does."""
 		if self.ppe or self.previous_revision:
 			return
-		for item in frappe.get_all(
-			"HSE PPE Item",
-			filters={"is_basic": 1},
-			fields=["name", "standard"],
-			order_by="sort_order asc, name asc",
-		):
-			self.append("ppe", {"ppe": item.name, "standard": item.standard})
+		for row in basic_ppe():
+			self.append("ppe", row)
 
 	def prefill_validity(self):
 		"""When HSE Settings gives a review period for SOPs, suggest the validity date from it."""
@@ -223,6 +218,25 @@ class HSESOP(MethodStatementDocument):
 					"document_name": self.name,
 				}
 			).insert(ignore_permissions=True)
+
+
+def basic_ppe():
+	"""The PPE every new SOP starts with: the items marked Basic in the PPE master."""
+	return [
+		{"ppe": item.name, "standard": item.standard}
+		for item in frappe.get_all(
+			"HSE PPE Item",
+			filters={"is_basic": 1},
+			fields=["name", "standard"],
+			order_by="sort_order asc, name asc",
+		)
+	]
+
+
+@frappe.whitelist()
+def new_document_defaults():
+	"""What a new SOP form starts with, so the screen shows it before the first save."""
+	return {"basic_ppe": basic_ppe()}
 
 
 @frappe.whitelist()
