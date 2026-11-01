@@ -22,7 +22,7 @@ approval levels are the workflow of each document type, which KRL can edit in th
 import frappe
 from frappe import _
 from frappe.model.workflow import get_workflow_name
-from frappe.utils import cint, get_fullname, now_datetime, nowdate
+from frappe.utils import add_months, cint, get_fullname, now_datetime, nowdate
 
 from krl_hse.utils.hse_document import HSEDocument
 
@@ -41,6 +41,14 @@ def get_superseded_state():
 
 def get_controlled_doctypes():
 	return frappe.get_hooks("hse_controlled_doctypes")
+
+
+def get_review_months(doctype):
+	"""How often a document type is reviewed, from its row in the Document Codes. 0 means never."""
+	for row in get_settings().document_codes:
+		if row.reference_doctype == doctype:
+			return cint(row.review_months)
+	return 0
 
 
 def get_workflow(doctype):
@@ -150,6 +158,11 @@ class ControlledDocument(HSEDocument):
 			self.first_issue_date = today
 		if cint(self.revision_number) > 0:
 			self.revision_date = today
+
+		# A document that is reviewed on a schedule starts its clock when it is approved.
+		if self.meta.has_field("next_review_date"):
+			months = get_review_months(self.doctype)
+			self.next_review_date = add_months(today, months) if months else None
 
 	def record_sign_off(self):
 		"""Write each change of approval state to the Sign-offs table."""
@@ -267,6 +280,15 @@ def get_revision_status(doctype, name):
 
 
 @frappe.whitelist()
+def planning_rules():
+	"""The settings a planning document form needs, for users who cannot open HSE Settings."""
+	return {
+		"parent_document_rule": get_settings().parent_document_rule or "Approved only",
+		"approved_state": get_approved_state(),
+	}
+
+
+@frappe.whitelist()
 def revision_status(doctype, name):
 	"""For the form: where the record stands among its revisions, and whether the user can revise it."""
 	frappe.has_permission(doctype, "read", doc=name, throw=True)
@@ -313,6 +335,9 @@ def start_revision(doctype, name, revision_trigger, revision_remark, source_docu
 	new.source_document = source_document
 	new.workflow_state = None
 	new.revision_date = None
+	# The review clock of the earlier revision does not carry over; approval starts a new one.
+	if new.meta.has_field("next_review_date"):
+		new.next_review_date = None
 	new.set("sign_offs", [])
 	new.insert()
 	return new.name

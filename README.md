@@ -9,7 +9,7 @@ Each phase has a demo, a KRL feedback gate and a sign-off test.
 | Phase | Content | Status |
 |-------|---------|--------|
 | 1 | Settings, document numbering, branches, roles, work order, workplace area, approval workflow | Built |
-| 2 | Planning documents: Method Statement (built), HIRA, SOP, JHA, Work Procedure Window | In progress. The Method Statement with approval, revisions and print format is ready to test. |
+| 2 | Planning documents: Method Statement (built), HIRA (built, print format to follow), SOP, JHA, Work Procedure Window | In progress. The Method Statement is ready to test. The HIRA and the risk matrix are ready to test on screen. |
 | 3 onward | See the "KRL HSE Phased Development Plan" | Not started |
 
 Nothing is hard-coded to KRL. Everything KRL may want to change is a record that can be edited
@@ -77,6 +77,26 @@ A new type is added to `hse_controlled_doctypes` (and `hse_branch_doctypes`) in 
   documents are built, a link to the real record is added beside the typed number, so older paper references still fit.
 * The names of the approved and superseded states, the sent-back state, the format number and revision of each
   form and the "internal document" line are HSE Settings, not code.
+* A document type that is reviewed on a schedule has a `next_review_date` field. It is set when the document is
+  approved, from "Review Every (Months)" on its row in the Document Codes of HSE Settings (HIRA: 6). The reminder
+  job comes with the SOP step.
+
+### HIRA and the risk matrix (Phase 2)
+
+* **HSE HIRA** follows KRL's format KRL/HSE/HIRA/1: header, one line for each hazard of each activity, control
+  measures, the client's own format block. It belongs to a Method Statement. HSE Settings says what is accepted
+  (Approved only, Any state, Not required).
+* The consequence and likelihood are chosen, and the severity follows from **HSE Risk Matrix** (before and after the
+  controls). Nothing about the matrix is in code: the scales, the severities, their colours and the pairs are masters.
+  Until KRL ticks "Confirmed by KRL", the starting mapping is shown as provisional on every HIRA.
+* A line gets a stable reference (L1, L2, ...) that stays when lines are moved or removed. Control measures are
+  tied to a line by it, and each is tagged to a level of the **Hierarchy of Control**.
+* A HIRA cannot be sent for review while a line is unrated, a line whose severity stops work has no control
+  measure, an additional measure has no responsible person or target date, or the risk after controls is higher than
+  before. HSE Settings can also block review while a work-stopping risk remains after the controls.
+* The worst risk left after controls is kept on the document, for the list and the cross-site risk register.
+* Three approval levels, as a workflow KRL can edit: HSE Officer or Branch HSE Head prepares, Branch HSE Head
+  reviews, Branch Head approves. The order and the approvers are open questions to KRL (A1 and A2).
 
 ### Print formats
 
@@ -102,7 +122,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (144 so far)
+# tests (213 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)
@@ -114,8 +134,9 @@ bench --site demo.test execute krl_hse.demo.seed.clear           # archive
 bench --site demo.test execute krl_hse.demo.seed.clear --kwargs "{'delete': 1}"   # delete
 ```
 
-The demo load also makes one draft Method Statement for each of the two sample jobs. `clear` resets them to Draft
-before it deletes them.
+The demo load also makes one draft Method Statement for each of the two sample jobs. A HIRA needs an approved
+Method Statement, so the sample HIRA for a job is made the next time the load runs after its Method Statement has been
+approved. `clear` resets them to Draft before it deletes them.
 
 Demo users are `test.<key>@krl-demo.example`, one per role. The sample people and records refer to
 branches by code: J and T carry the two sample jobs, and anything whose code is not on the site is skipped

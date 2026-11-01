@@ -102,3 +102,45 @@ def act_on(user, doctype, name, action, **values):
 		doc.update(values)
 		doc.save()
 	return apply_workflow(doc, action)
+
+
+def make_approved_method_statement(branch, work_order, **kw):
+	"""A Method Statement already in force, for tests of the documents that depend on it.
+
+	The approval steps themselves are tested with the Method Statement.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	values = method_statement_content()
+	values.update(kw)
+	ms = make_method_statement(branch, work_order, **values)
+	frappe.db.set_value("HSE Method Statement", ms.name, "workflow_state", get_approved_state())
+	return frappe.get_doc("HSE Method Statement", ms.name)
+
+
+def hira_line(**kw):
+	"""A fully rated HIRA line: Severity III before the controls, Severity I after."""
+	values = {
+		"job": "TEST job",
+		"activity": "TEST: loading slag at the pit",
+		"hazard_category": "Physical",
+		"hazard": "TEST: moving loader near people",
+		"impact_area": "People",
+		"consequence": "C2 Minor",
+		"likelihood": "Possible",
+		"residual_consequence": "C1 Insignificant",
+		"residual_likelihood": "Rare",
+	}
+	values.update(kw)
+	return values
+
+
+def make_hira(branch, method_statement, **kw):
+	values = {
+		"doctype": "HSE HIRA",
+		"branch": branch,
+		"method_statement": method_statement,
+		"lines": [hira_line()],
+	}
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)

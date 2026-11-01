@@ -1,13 +1,46 @@
 {
  "_comment": "Starting document codes for HSE Settings, one set per phase. Loaded once when the doctype is first set up; after that KRL owns the table. Codes follow the KRL formats in the BRD.",
  "phase_1": [
-  {"reference_doctype": "HSE Work Order", "document_code": "WO", "number_format": ""},
-  {"reference_doctype": "HSE Workplace Area", "document_code": "WPAD", "number_format": ""}
+  {
+   "reference_doctype": "HSE Work Order",
+   "document_code": "WO",
+   "number_format": ""
+  },
+  {
+   "reference_doctype": "HSE Workplace Area",
+   "document_code": "WPAD",
+   "number_format": ""
+  }
  ],
  "phase_2": [
-  {"reference_doctype": "HSE Method Statement", "document_code": "MS", "number_format": "", "format_number": "KRL/HSE/MS/01", "format_revision": "01/24"},
-  {"reference_doctype": "HSE HIRA", "document_code": "HIRA", "number_format": "", "format_number": "KRL/HSE/HIRA/1", "format_revision": "01/24"},
-  {"reference_doctype": "HSE SOP", "document_code": "SOP", "number_format": "", "format_number": "KRL/HSE/SOP/1", "format_revision": "01/24"},
-  {"reference_doctype": "HSE JHA", "document_code": "JHA", "number_format": "", "format_number": "KRL/HSE/JHA/1", "format_revision": "01/24"}
+  {
+   "reference_doctype": "HSE Method Statement",
+   "document_code": "MS",
+   "number_format": "",
+   "format_number": "KRL/HSE/MS/01",
+   "format_revision": "01/24"
+  },
+  {
+   "reference_doctype": "HSE HIRA",
+   "document_code": "HIRA",
+   "number_format": "",
+   "format_number": "KRL/HSE/HIRA/1",
+   "format_revision": "01/24",
+   "review_months": 6
+  },
+  {
+   "reference_doctype": "HSE SOP",
+   "document_code": "SOP",
+   "number_format": "",
+   "format_number": "KRL/HSE/SOP/1",
+   "format_revision": "01/24"
+  },
+  {
+   "reference_doctype": "HSE JHA",
+   "document_code": "JHA",
+   "number_format": "",
+   "format_number": "KRL/HSE/JHA/1",
+   "format_revision": "01/24"
+  }
  ]
 }

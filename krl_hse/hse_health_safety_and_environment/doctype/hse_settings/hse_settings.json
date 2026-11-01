@@ -13,6 +13,11 @@
   "default_number_format",
   "codes_section",
   "document_codes",
+  "planning_section",
+  "parent_document_rule",
+  "block_high_residual_risk",
+  "column_break_planning",
+  "review_reminder_days",
   "workflow_section",
   "sent_back_state",
   "approved_state",
@@ -164,11 +169,42 @@
    "label": "Line Printed on Every Format",
    "default": "This is an internal document and not for circulation",
    "reqd": 1
+  },
+  {
+   "fieldname": "planning_section",
+   "fieldtype": "Section Break",
+   "label": "Planning Documents"
+  },
+  {
+   "fieldname": "parent_document_rule",
+   "fieldtype": "Select",
+   "label": "Parent Document Needed Before a HIRA, SOP or JHA",
+   "options": "Approved only\nAny state\nNot required",
+   "default": "Approved only",
+   "reqd": 1,
+   "description": "A HIRA belongs to a Method Statement. Approved only: the Method Statement must be approved first (the BRD rule). Any state: a draft Method Statement is enough. Not required: a HIRA can be made without one."
+  },
+  {
+   "fieldname": "block_high_residual_risk",
+   "fieldtype": "Check",
+   "label": "Block Review While a Work-Stopping Risk Remains After Controls",
+   "description": "When ticked, a HIRA cannot be sent for review while any line is still at a severity that stops work after its controls. When not ticked it can be, and the HIRA is flagged."
+  },
+  {
+   "fieldname": "column_break_planning",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "review_reminder_days",
+   "fieldtype": "Int",
+   "label": "Review Reminder (Days Before Due)",
+   "default": "30",
+   "description": "How many days before the next review date the reminder is raised. The review period of each document is in the Document Codes above."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-29 10:00:00.000000",
+ "modified": "2026-11-01 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE Settings",

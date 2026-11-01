@@ -152,12 +152,14 @@ hse_branch_doctypes = [
 	"HSE Work Order",
 	"HSE Workplace Area",
 	"HSE Method Statement",
+	"HSE HIRA",
 ]
 
 # Planning documents with revisions and a lifecycle (krl_hse/utils/controlled_document.py). Each
 # must also be in hse_branch_doctypes above. A test fails if one is missed.
 hse_controlled_doctypes = [
 	"HSE Method Statement",
+	"HSE HIRA",
 ]
 
 permission_query_conditions = {

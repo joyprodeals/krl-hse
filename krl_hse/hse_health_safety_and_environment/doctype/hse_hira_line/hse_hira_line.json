@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "activity_section",
+  "line_ref",
+  "job",
+  "routine",
+  "activity_category",
+  "column_break_activity",
+  "activity",
+  "hazard_section",
+  "hazard_category",
+  "hazard",
+  "hazardous_event",
+  "column_break_hazard",
+  "cause",
+  "consequence_impact",
+  "impact_area",
+  "rating_section",
+  "existing_safeguard",
+  "column_break_rating",
+  "consequence",
+  "likelihood",
+  "probability",
+  "severity",
+  "residual_section",
+  "recommendation",
+  "column_break_residual",
+  "residual_consequence",
+  "residual_likelihood",
+  "residual_probability",
+  "residual_severity"
+ ],
+ "fields": [
+  {
+   "fieldname": "activity_section",
+   "fieldtype": "Section Break",
+   "label": "Activity"
+  },
+  {
+   "fieldname": "line_ref",
+   "fieldtype": "Data",
+   "label": "Line",
+   "read_only": 1,
+   "no_copy": 0,
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "Given when the line is saved. Control measures refer to it."
+  },
+  {
+   "fieldname": "job",
+   "fieldtype": "Data",
+   "label": "Job",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "routine",
+   "fieldtype": "Select",
+   "label": "Routine or Non-Routine",
+   "options": "Routine\nNon-Routine",
+   "default": "Routine",
+   "reqd": 1
+  },
+  {
+   "fieldname": "activity_category",
+   "fieldtype": "Link",
+   "label": "Activity Covers",
+   "options": "HSE Activity Category",
+   "description": "Services, infrastructure, equipment, materials, substances, physical conditions, human factors or social factors"
+  },
+  {
+   "fieldname": "column_break_activity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "activity",
+   "fieldtype": "Small Text",
+   "label": "Activity",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "hazard_section",
+   "fieldtype": "Section Break",
+   "label": "Hazard"
+  },
+  {
+   "fieldname": "hazard_category",
+   "fieldtype": "Link",
+   "label": "Hazard Category",
+   "options": "HSE Hazard Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hazard",
+   "fieldtype": "Small Text",
+   "label": "Hazard",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Source, situation or circumstance with potential to cause injury or ill-health"
+  },
+  {
+   "fieldname": "hazardous_event",
+   "fieldtype": "Small Text",
+   "label": "Hazardous Event",
+   "description": "Work-related event or exposure"
+  },
+  {
+   "fieldname": "column_break_hazard",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cause",
+   "fieldtype": "Small Text",
+   "label": "Cause"
+  },
+  {
+   "fieldname": "consequence_impact",
+   "fieldtype": "Small Text",
+   "label": "Consequence (Impact)"
+  },
+  {
+   "fieldname": "impact_area",
+   "fieldtype": "Link",
+   "label": "Impact On",
+   "options": "HSE Impact Area",
+   "reqd": 1,
+   "description": "For a second area, repeat the line."
+  },
+  {
+   "fieldname": "rating_section",
+   "fieldtype": "Section Break",
+   "label": "Existing Safeguard and Risk Rating"
+  },
+  {
+   "fieldname": "existing_safeguard",
+   "fieldtype": "Small Text",
+   "label": "Existing Safeguard"
+  },
+  {
+   "fieldname": "column_break_rating",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "consequence",
+   "fieldtype": "Link",
+   "label": "Consequence",
+   "options": "HSE Consequence Level"
+  },
+  {
+   "fieldname": "likelihood",
+   "fieldtype": "Link",
+   "label": "Likelihood",
+   "options": "HSE Likelihood Level"
+  },
+  {
+   "fieldname": "probability",
+   "fieldtype": "Int",
+   "label": "Probability of Occurrence",
+   "read_only": 1
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Link",
+   "label": "Risk Severity",
+   "options": "HSE Severity Level",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "residual_section",
+   "fieldtype": "Section Break",
+   "label": "Recommendation and Residual Risk"
+  },
+  {
+   "fieldname": "recommendation",
+   "fieldtype": "Small Text",
+   "label": "Recommendation (Opportunity for Improvement)"
+  },
+  {
+   "fieldname": "column_break_residual",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "residual_consequence",
+   "fieldtype": "Link",
+   "label": "Residual Consequence",
+   "options": "HSE Consequence Level"
+  },
+  {
+   "fieldname": "residual_likelihood",
+   "fieldtype": "Link",
+   "label": "Residual Likelihood",
+   "options": "HSE Likelihood Level"
+  },
+  {
+   "fieldname": "residual_probability",
+   "fieldtype": "Int",
+   "label": "Residual Probability of Occurrence",
+   "read_only": 1
+  },
+  {
+   "fieldname": "residual_severity",
+   "fieldtype": "Link",
+   "label": "Residual Risk Severity",
+   "options": "HSE Severity Level",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE HIRA Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

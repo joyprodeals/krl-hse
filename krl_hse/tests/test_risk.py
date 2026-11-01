@@ -150,5 +150,6 @@ class TestRiskMatrix(IntegrationTestCase):
 
 	def test_text_is_dark_on_light_and_light_on_dark(self):
 		self.assertEqual(text_colour("#fbc02d"), "#000000")
+		self.assertEqual(text_colour("#7cb342"), "#000000")
 		self.assertEqual(text_colour("#b71c1c"), "#ffffff")
 		self.assertEqual(text_colour(None), "#000000")

@@ -187,6 +187,110 @@ METHOD_STATEMENTS = [
 	},
 ]
 
+# One Draft HIRA for the approved Method Statement of each sample work. A line is
+# (job, routine, activity category, activity, hazard category, hazard, hazardous event, cause,
+#  consequence, impact area, existing safeguard, recommendation, ratings). The ratings are the
+# consequence and likelihood before the controls, then after them.
+HIRAS = [
+	{
+		"job_code": "TEST-ATH",
+		"area": "TEST Loading Yard",
+		"lines": [
+			(
+				"TEST Loading",
+				"Routine",
+				"Equipment",
+				"TEST: the wheel loader moves in the yard",
+				"Physical",
+				"TEST: moving vehicle close to people",
+				"TEST: the loader hits a person",
+				"TEST: poor visibility, nobody guiding the loader",
+				"TEST: serious injury or death",
+				"People",
+				"TEST: reverse alarm and horn",
+				"TEST: appoint a banksman for every reversing move",
+				("C4 Major", "Possible", "C4 Major", "Rare"),
+			),
+			(
+				"TEST Loading",
+				"Routine",
+				"Physical Conditions",
+				"TEST: walking in the yard during loading",
+				"Physical",
+				"TEST: uneven ground and loose material",
+				"TEST: a person slips or trips",
+				"TEST: poor housekeeping",
+				"TEST: sprain or fracture",
+				"People",
+				"TEST: marked walkways",
+				"",
+				("C2 Minor", "Possible", "C1 Insignificant", "Rare"),
+			),
+			(
+				"TEST Workshop servicing",
+				"Non-Routine",
+				"Substances",
+				"TEST: draining oil during servicing",
+				"Chemical",
+				"TEST: used oil",
+				"TEST: oil spills on the floor and reaches the drain",
+				"TEST: no drip tray",
+				"TEST: soil and water contamination",
+				"Environment",
+				"TEST: absorbent material kept in the workshop",
+				"TEST: provide drip trays at every service bay",
+				("C2 Minor", "Unlikely", "C1 Insignificant", "Unlikely"),
+			),
+		],
+		"controls": [
+			(1, "Existing", "TEST: reverse alarm and horn on every loader", "Engineering Control"),
+			(1, "Existing", "TEST: loader operators trained and authorised", "Administrative Control"),
+			(2, "Existing", "TEST: walkways marked with paint and signs", "Administrative Control"),
+		],
+	},
+	{
+		"job_code": "TEST-SLAG",
+		"area": "TEST Slag Pit",
+		"lines": [
+			(
+				"TEST Slag handling",
+				"Routine",
+				"Materials",
+				"TEST: loading hot slag into the dumper",
+				"Physical",
+				"TEST: hot metal and heat",
+				"TEST: splash of hot slag on a worker",
+				"TEST: slag not cooled, people too close",
+				"TEST: severe burns",
+				"People",
+				"TEST: barricade around the pit",
+				"TEST: allow loading only after the cooling time is over",
+				("C5 Catastrophic", "Possible", "C4 Major", "Rare"),
+			),
+			(
+				"TEST Slag handling",
+				"Routine",
+				"Physical Conditions",
+				"TEST: working at the pit side",
+				"Biological",
+				"TEST: dust and fumes",
+				"TEST: breathing in dust",
+				"TEST: no dust suppression",
+				"TEST: lung irritation",
+				"People",
+				"",
+				"TEST: water sprinkling during loading",
+				("C2 Minor", "Very Likely", "C1 Insignificant", "Unlikely"),
+			),
+		],
+		"controls": [
+			(1, "Existing", "TEST: barricade and warning signs around the pit", "Isolation"),
+			(1, "Existing", "TEST: heat-resistant suit and face shield", "PPE"),
+			(2, "Existing", "TEST: dust mask issued to every worker", "PPE"),
+		],
+	},
+]
+
 DESIGNATIONS = ["TEST Loader Operator", "TEST Fitter", "TEST Store Keeper"]
 
 
@@ -210,6 +314,7 @@ def load(password=None, branches=None, head_office=None):
 	_ensure_work_orders(sites)
 	_ensure_areas(sites)
 	_ensure_method_statements(sites)
+	_ensure_hiras(sites)
 	frappe.db.commit()
 	print(f"Demo data loaded for branches {', '.join(f'{c} ({n})' for c, n in sorted(sites.items()))}.")
 	print(f"Test logins end with @{DOMAIN}.")
@@ -402,6 +507,86 @@ def _ensure_method_statements(sites):
 		).insert(ignore_permissions=True)
 
 
+def _ensure_hiras(sites):
+	"""A Draft HIRA for each sample work whose Method Statement has been approved.
+
+	The Method Statements are left in Draft so the approval can be walked through. A HIRA needs an
+	approved one, so until it is approved the HIRA is skipped, and made the next time this runs.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	for values in HIRAS:
+		work_order = frappe.db.get_value("HSE Work Order", {"job_code": values["job_code"]}, "name")
+		if not work_order:
+			print(f"Skipping HIRA for {values['job_code']}: the work order is not on this site.")
+			continue
+
+		ms = frappe.db.get_value(
+			"HSE Method Statement",
+			{"work_order": work_order, "workflow_state": get_approved_state()},
+			["name", "branch"],
+			as_dict=True,
+		)
+		if not ms:
+			print(
+				f"Skipping HIRA for {values['job_code']}: its Method Statement is not approved yet. "
+				"Approve it, then run the load again."
+			)
+			continue
+		if frappe.db.exists("HSE HIRA", {"method_statement": ms.name}):
+			continue
+
+		area = frappe.db.get_value("HSE Workplace Area", {"branch": ms.branch, "area_name": values["area"]})
+		lines = [
+			{
+				"job": job,
+				"routine": routine,
+				"activity_category": category,
+				"activity": activity,
+				"hazard_category": hazard_category,
+				"hazard": hazard,
+				"hazardous_event": event,
+				"cause": cause,
+				"consequence_impact": consequence_text,
+				"impact_area": impact,
+				"existing_safeguard": safeguard,
+				"recommendation": recommendation,
+				"consequence": ratings[0],
+				"likelihood": ratings[1],
+				"residual_consequence": ratings[2],
+				"residual_likelihood": ratings[3],
+			}
+			for (
+				job,
+				routine,
+				category,
+				activity,
+				hazard_category,
+				hazard,
+				event,
+				cause,
+				consequence_text,
+				impact,
+				safeguard,
+				recommendation,
+				ratings,
+			) in values["lines"]
+		]
+		frappe.get_doc(
+			{
+				"doctype": "HSE HIRA",
+				"branch": ms.branch,
+				"method_statement": ms.name,
+				"area": area,
+				"lines": lines,
+				"controls": [
+					{"line_ref": f"L{n}", "measure_type": kind, "control": text, "hierarchy_level": level}
+					for n, kind, text, level in values["controls"]
+				],
+			}
+		).insert(ignore_permissions=True)
+
+
 def clear(delete=0):
 	"""Archive the demo data: cancel work orders, disable areas and users.
 
@@ -409,14 +594,14 @@ def clear(delete=0):
 	"""
 	delete = int(delete)
 
-	# Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
+	# HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
 	# cannot be archived, so without delete=1 they are left as they are.
 	if delete:
-		for name in frappe.get_all(
-			"HSE Method Statement", filters={"name_of_work": ["like", "TEST%"]}, pluck="name"
-		):
-			frappe.db.set_value("HSE Method Statement", name, "workflow_state", "Draft")
-			frappe.delete_doc("HSE Method Statement", name, force=True, ignore_permissions=True)
+		# A HIRA goes before the Method Statement it belongs to.
+		for doctype in ("HSE HIRA", "HSE Method Statement"):
+			for name in frappe.get_all(doctype, filters={"name_of_work": ["like", "TEST%"]}, pluck="name"):
+				frappe.db.set_value(doctype, name, "workflow_state", "Draft")
+				frappe.delete_doc(doctype, name, force=True, ignore_permissions=True)
 
 	for name in frappe.get_all("HSE Workplace Area", filters={"area_name": ["like", "TEST%"]}, pluck="name"):
 		if delete:

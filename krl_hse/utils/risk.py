@@ -72,7 +72,7 @@ def text_colour(background):
 		red, green, blue = (int(value[i : i + 2], 16) for i in (0, 2, 4))
 	except ValueError:
 		return "#000000"
-	return "#000000" if (red * 299 + green * 587 + blue * 114) / 1000 > 150 else "#ffffff"
+	return "#000000" if (red * 299 + green * 587 + blue * 114) / 1000 > 128 else "#ffffff"
 
 
 def matrix_preview_html():
