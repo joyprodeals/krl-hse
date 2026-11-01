@@ -84,6 +84,7 @@ class ControlledDocument(HSEDocument):
 		self.validate_content()
 		self.check_ready_for_review()
 		self.stamp_issue_dates()
+		self.set_review_status()
 		self.record_sign_off()
 
 	def validate_content(self):
@@ -167,6 +168,22 @@ class ControlledDocument(HSEDocument):
 			months = get_review_months(self.doctype)
 			self.next_review_date = add_months(today, months) if months else None
 
+	def set_review_status(self):
+		"""Current, Review Due or Overdue for an approved document that is reviewed on a schedule.
+
+		The daily job (utils/review.py) keeps it up to date after this.
+		"""
+		if not self.meta.has_field("review_status"):
+			return
+
+		from krl_hse.utils.review import review_date_field, review_status_for
+
+		field = review_date_field(self.doctype)
+		if field and self.workflow_state == get_approved_state():
+			self.review_status = review_status_for(self.get(field))
+		else:
+			self.review_status = ""
+
 	def record_sign_off(self):
 		"""Write each change of approval state to the Sign-offs table."""
 		workflow = get_workflow(self.doctype)
@@ -221,13 +238,10 @@ class ControlledDocument(HSEDocument):
 			self.supersede_previous_revision()
 
 	def supersede_previous_revision(self):
-		frappe.db.set_value(
-			self.doctype,
-			self.previous_revision,
-			"workflow_state",
-			get_superseded_state(),
-			update_modified=True,
-		)
+		values = {"workflow_state": get_superseded_state()}
+		if self.meta.has_field("review_status"):
+			values["review_status"] = ""
+		frappe.db.set_value(self.doctype, self.previous_revision, values, update_modified=True)
 		frappe.get_doc(self.doctype, self.previous_revision).add_comment(
 			"Info", _("Superseded by revision {0}, {1}.").format(self.revision_number, self.name)
 		)

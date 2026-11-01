@@ -164,6 +164,10 @@
    "description": "A change in work, method, equipment or people"
   },
   {
+   "trigger_name": "Scheduled Review",
+   "description": "The review date came round. The document is checked and approved again, with or without a change"
+  },
+  {
    "trigger_name": "Other",
    "description": "Give the reason under What Changed and Why"
   }
