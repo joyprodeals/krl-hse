@@ -1,4 +1,4 @@
-const API = "krl_hse.hse_health_safety_and_environment.doctype.hse_hira.hse_hira";
+const API = "krl_hse.utils.planning_document";
 const RISK_API = "krl_hse.utils.risk.get_risk_matrix";
 const RULES_API = "krl_hse.utils.controlled_document.planning_rules";
 

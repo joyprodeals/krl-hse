@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "hazard",
+  "mitigation",
+  "hira",
+  "hira_line"
+ ],
+ "fields": [
+  {
+   "fieldname": "hazard",
+   "fieldtype": "Small Text",
+   "label": "Hazard Identified",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "mitigation",
+   "fieldtype": "Small Text",
+   "label": "Mandatory Risk Mitigation Action",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 4
+  },
+  {
+   "fieldname": "hira",
+   "fieldtype": "Link",
+   "label": "HIRA",
+   "options": "HSE HIRA",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "hira_line",
+   "fieldtype": "Data",
+   "label": "HIRA Line",
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "For example L3. Filled by Add Hazards from HIRA."
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE SOP Hazard",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

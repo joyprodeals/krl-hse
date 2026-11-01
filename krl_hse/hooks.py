@@ -153,6 +153,7 @@ hse_branch_doctypes = [
 	"HSE Workplace Area",
 	"HSE Method Statement",
 	"HSE HIRA",
+	"HSE SOP",
 ]
 
 # Planning documents with revisions and a lifecycle (krl_hse/utils/controlled_document.py). Each
@@ -160,6 +161,7 @@ hse_branch_doctypes = [
 hse_controlled_doctypes = [
 	"HSE Method Statement",
 	"HSE HIRA",
+	"HSE SOP",
 ]
 
 permission_query_conditions = {

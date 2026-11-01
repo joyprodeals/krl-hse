@@ -18,6 +18,7 @@
   "client_name",
   "column_break_project",
   "next_review_date",
+  "review_status",
   "highest_residual_severity",
   "has_high_residual_risk",
   "lines_section",
@@ -329,11 +330,21 @@
    "options": "HSE Sign Off",
    "read_only": 1,
    "no_copy": 1
+  },
+  {
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "label": "Review Status",
+   "options": "\nCurrent\nReview Due\nOverdue",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-01 16:00:00.000000",
+ "modified": "2026-11-01 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE HIRA",

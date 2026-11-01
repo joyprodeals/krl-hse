@@ -247,6 +247,7 @@ def ensure_workflows():
 						"next_state": t["next_state"],
 						"allowed": role,
 						"allow_self_approval": t.get("allow_self_approval", 1),
+						"condition": t.get("condition"),
 					}
 					for t in entry["transitions"]
 					for role in t["allowed"]

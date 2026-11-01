@@ -144,3 +144,73 @@ def make_hira(branch, method_statement, **kw):
 	}
 	values.update(kw)
 	return frappe.get_doc(values).insert(ignore_permissions=True)
+
+
+def sop_step(**kw):
+	values = {
+		"activity": "TEST: isolate the cylinder valve",
+		"hazard_impact": "TEST: gas leak, fire",
+		"responsibility": "TEST Gas cutter",
+		"method": "TEST: close the valve, check with soap solution",
+	}
+	values.update(kw)
+	return values
+
+
+def sop_content(work="TEST Slag handling", **kw):
+	"""The least a SOP needs before it can be sent for review."""
+	from frappe.utils import add_months, nowdate
+
+	values = {
+		"sop_title": "TEST Gas cutting",
+		"purpose": "TEST: cut steel safely",
+		"scope": "TEST: all gas cutting at the pit",
+		"validity_date": add_months(nowdate(), 12),
+		"works": [{"work": work}],
+		"hazards": [{"hazard": "TEST: gas leak", "mitigation": "TEST: leak check before use"}],
+		"steps": [sop_step()],
+	}
+	values.update(kw)
+	return values
+
+
+def make_sop(branch, method_statement, **kw):
+	values = sop_content()
+	values.update({"doctype": "HSE SOP", "branch": branch, "method_statement": method_statement})
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)
+
+
+def override_setting(fieldname, value):
+	"""Change an HSE Settings field for one test. Returns the function that puts it back."""
+	settings = frappe.get_doc("HSE Settings")
+	original = settings.get(fieldname)
+	settings.set(fieldname, value)
+	settings.save(ignore_permissions=True)
+	frappe.clear_cache(doctype="HSE Settings")
+
+	def restore():
+		again = frappe.get_doc("HSE Settings")
+		again.set(fieldname, original)
+		again.save(ignore_permissions=True)
+		frappe.clear_cache(doctype="HSE Settings")
+
+	return restore
+
+
+def override_review_months(doctype, months):
+	"""Change the review period of a document code for one test. Returns the function that restores it."""
+	settings = frappe.get_doc("HSE Settings")
+	row = next(r for r in settings.document_codes if r.reference_doctype == doctype)
+	original = row.review_months
+	row.review_months = months
+	settings.save(ignore_permissions=True)
+	frappe.clear_cache(doctype="HSE Settings")
+
+	def restore():
+		again = frappe.get_doc("HSE Settings")
+		next(r for r in again.document_codes if r.reference_doctype == doctype).review_months = original
+		again.save(ignore_permissions=True)
+		frappe.clear_cache(doctype="HSE Settings")
+
+	return restore

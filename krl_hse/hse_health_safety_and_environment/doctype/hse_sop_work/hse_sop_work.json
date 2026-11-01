@@ -1,0 +1,33 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "work"
+ ],
+ "fields": [
+  {
+   "fieldname": "work",
+   "fieldtype": "Select",
+   "label": "Work",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 8,
+   "description": "A work of the Method Statement, or a common work"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE SOP Work",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

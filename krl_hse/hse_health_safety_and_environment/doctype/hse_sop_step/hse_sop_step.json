@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "step_ref",
+  "activity",
+  "requirements",
+  "hazard_impact",
+  "responsibility",
+  "method",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "step_ref",
+   "fieldtype": "Data",
+   "label": "Step",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "Given when the step is saved. A JHA refers to it."
+  },
+  {
+   "fieldname": "activity",
+   "fieldtype": "Small Text",
+   "label": "Activity (What)",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "requirements",
+   "fieldtype": "Small Text",
+   "label": "Associated Requirements"
+  },
+  {
+   "fieldname": "hazard_impact",
+   "fieldtype": "Small Text",
+   "label": "Hazard and Impacts",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "responsibility",
+   "fieldtype": "Data",
+   "label": "Responsibility (Who)",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Small Text",
+   "label": "Process, Tools and PPE (How)",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks or Reference"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE SOP Step",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

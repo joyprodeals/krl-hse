@@ -61,6 +61,9 @@ class ControlledDocument(HSEDocument):
 
 	number_job_field = "work_order"
 
+	# Fields that are cleared when a revision is started from an approved document.
+	not_carried_to_revision = ("next_review_date", "review_status")
+
 	# --- Numbering ----------------------------------------------------------------------------
 
 	def autoname(self):
@@ -335,9 +338,11 @@ def start_revision(doctype, name, revision_trigger, revision_remark, source_docu
 	new.source_document = source_document
 	new.workflow_state = None
 	new.revision_date = None
-	# The review clock of the earlier revision does not carry over; approval starts a new one.
-	if new.meta.has_field("next_review_date"):
-		new.next_review_date = None
+	# What belongs to the earlier revision alone (its review clock, validity, client approval) does
+	# not carry over; the new revision earns its own.
+	for fieldname in doc.not_carried_to_revision:
+		if new.meta.has_field(fieldname):
+			new.set(fieldname, None)
 	new.set("sign_offs", [])
 	new.insert()
 	return new.name
