@@ -9,7 +9,7 @@ Each phase has a demo, a KRL feedback gate and a sign-off test.
 | Phase | Content | Status |
 |-------|---------|--------|
 | 1 | Settings, document numbering, branches, roles, work order, workplace area, approval workflow | Built |
-| 2 | Planning documents: Method Statement (built), HIRA (built, print format to follow), SOP, JHA, Work Procedure Window | In progress. The Method Statement is ready to test. The HIRA and the risk matrix are ready to test on screen. |
+| 2 | Planning documents: Method Statement (built), HIRA (built), SOP, JHA, Work Procedure Window | In progress. The Method Statement is ready to test. The HIRA, the risk matrix and the HIRA print format are ready to test. |
 | 3 onward | See the "KRL HSE Phased Development Plan" | Not started |
 
 Nothing is hard-coded to KRL. Everything KRL may want to change is a record that can be edited
@@ -122,7 +122,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (213 so far)
+# tests (228 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)

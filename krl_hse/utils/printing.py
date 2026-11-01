@@ -187,3 +187,26 @@ def hse_work_description(doc, work):
 	return next(
 		(row.description for row in doc.get("works") or [] if row.work_name == work and row.description), ""
 	)
+
+
+def hse_employee_name(employee):
+	"""The name of an Employee for a printout, or what was given when there is no such record."""
+	if not employee:
+		return ""
+	return frappe.db.get_value("Employee", employee, "employee_name") or employee
+
+
+def hse_risk_legend():
+	"""The severity scale for the foot of a risk printout, and whether the matrix behind it is confirmed."""
+	rows = frappe.get_all(
+		"HSE Severity Level",
+		fields=["name", "level", "harm", "action_required", "rectify_immediately", "rectify_within_days"],
+		order_by="level",
+	)
+	for row in rows:
+		row["timeline"] = (
+			_("Immediate")
+			if row.rectify_immediately
+			else (_("Within {0} days").format(row.rectify_within_days) if row.rectify_within_days else "")
+		)
+	return {"rows": rows, "confirmed": bool(frappe.get_cached_doc("HSE Risk Matrix").confirmed_by_krl)}
