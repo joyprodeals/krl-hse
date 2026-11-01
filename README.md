@@ -9,7 +9,7 @@ Each phase has a demo, a KRL feedback gate and a sign-off test.
 | Phase | Content | Status |
 |-------|---------|--------|
 | 1 | Settings, document numbering, branches, roles, work order, workplace area, approval workflow | Built |
-| 2 | Planning documents: Method Statement (built), HIRA (built), SOP (built), JHA, Work Procedure Window | In progress. The Method Statement, the HIRA with its risk matrix, and the SOP with its review reminders are ready to test, each with its print format. |
+| 2 | Planning documents: Method Statement (built), HIRA (built), SOP (built), JHA (built), Work Procedure Window | In progress. The Method Statement, the HIRA with its risk matrix, the SOP with its review reminders, and the JHA are ready to test, each with its print format. |
 | 3 onward | See the "KRL HSE Phased Development Plan" | Not started |
 
 Nothing is hard-coded to KRL. Everything KRL may want to change is a record that can be edited
@@ -118,6 +118,37 @@ A new type is added to `hse_controlled_doctypes` (and `hse_branch_doctypes`) in 
   every SOP until KRL answers.
 * When a SOP is approved the people on its distribution list get a notification.
 
+### JHA (Phase 2)
+
+* **HSE JHA** (Job Hazard Analysis) follows KRL's format KRL/HSE/JHA/1. It is made for one SOP. The branch, Method
+  Statement, work order, area and title come from that SOP, and a new JHA starts with the steps and PPE of the SOP and
+  the emergency numbers of its Method Statement, for the user to complete.
+* **Parent rule.** The same setting as for the HIRA and the SOP ("Parent Document Needed Before a HIRA, SOP or JHA")
+  decides whether the SOP must be approved and in force. With "Approved only" a SOP that has expired or has been
+  replaced cannot be chosen for a new JHA, and the message names the SOP that replaced it. A JHA always needs a SOP.
+* **One JHA for each SOP** is a setting (**JHAs for Each SOP** in HSE Settings: "One for each SOP", the default, or
+  "More than one allowed") because KRL has not answered it yet. A revision is never blocked by it.
+* Content: the SOPs the job follows (the main SOP is always listed first, others may be picked or typed), the hazard
+  analysis team (required) and the employees consulted, the equipment and resources, the mandatory PPE, the emergency
+  contacts, the training to be imparted, and the client's own format block where the client requires it.
+* The analysis is three linked tables with stable references that survive moving and removing rows: **steps** (A1,
+  A2, ... each can point to the SOP step it came from), **hazards** (H1, H2, ... each belongs to a step) and
+  **control measures** (each belongs to a hazard and says its level in the hierarchy of control).
+  **Add Steps from SOP** copies steps that are not in the JHA yet. **Add Hazards from HIRA** picks a step, a HIRA of
+  the same branch and Method Statement and some of its lines, and copies each line as a hazard of that step with its
+  control measures (the existing safeguard of the line becomes a control measure with no level). A line is never
+  copied twice to the same step, and each hazard remembers its HIRA line.
+* **Ready for review.** A JHA cannot be sent for review until it has at least one step, a hazard analysis team, at
+  least one hazard for every step, an impact for every hazard, at least one control measure for every hazard, and a
+  hierarchy level on every control measure. These are assumptions (a step with no hazard is not accepted, for
+  example) that KRL can change.
+* Approval is the same workflow as the SOP: Branch HSE Head reviews, Branch Head approves, HO HSE Team gives the
+  final approval; a revision skips the Branch HSE Head step. A JHA has no review date, so it has no reminders.
+* The form says so when the SOP of a JHA has since been replaced, has expired or is no longer approved, and a
+  revision can move to a later revision of the same SOP but not to a different SOP.
+* Not built yet: updating a JHA during the job (new hazards found while working). An approved JHA is frozen, so that
+  belongs with the work permit and execution phase.
+
 ### Review dates and reminders
 
 * A controlled document that is reviewed on a schedule shows **Current**, **Review Due** or **Overdue**, from its
@@ -140,7 +171,10 @@ Settings (document code rows, "Printing" section) and from `krl_hse/utils/printi
 approved says so in the header, and a superseded one says a later revision is in force. The signature boxes
 (Prepared, Reviewed, Approved) are read from the Sign-offs and name the role each person signed in. The SOP print
 shows the PPE pictures from the PPE master, groups the actions of one hazard under that hazard, and prints the
-pictorial SOP on its own page. The PDF needs wkhtmltopdf with
+pictorial SOP on its own page. The JHA print has the six rows of the paper form (reference SOPs, hazard analysis
+team, equipment and resources, emergency contacts, training, PPE) and then one table: each step of the job, the
+hazards of that step (one row each, the step cells span them), their impact and the numbered control measures with
+their level of control. It has no valid-until date, because a JHA is not reviewed on a schedule. The PDF needs wkhtmltopdf with
 patched Qt, as on Frappe Cloud. A build without it prints the PDF without the repeated header and footer.
 
 ### Document numbers
@@ -159,7 +193,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (342 so far)
+# tests (442 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)
@@ -172,8 +206,9 @@ bench --site demo.test execute krl_hse.demo.seed.clear --kwargs "{'delete': 1}" 
 ```
 
 The demo load also makes one draft Method Statement for each of the two sample jobs. A HIRA and a SOP need an
-approved Method Statement, so the sample HIRA and SOP for a job are made the next time the load runs after its Method
-Statement has been approved. `clear` resets them to Draft before it deletes them.
+approved Method Statement, and a JHA needs an approved SOP, so the sample HIRA and SOP for a job are made the next time
+the load runs after its Method Statement has been approved, and the sample JHA the next time after its SOP has been
+approved. `clear` resets them to Draft before it deletes them.
 
 Demo users are `test.<key>@krl-demo.example`, one per role. The sample people and records refer to
 branches by code: J and T carry the two sample jobs, and anything whose code is not on the site is skipped
