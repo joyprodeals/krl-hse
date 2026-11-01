@@ -59,13 +59,32 @@ def _designation(user):
 	return frappe.db.get_value("Employee", {"user_id": user}, "designation") or ""
 
 
+def _role_of(row):
+	"""The role the user acted in, read from the workflow transition that this sign-off records."""
+	from krl_hse.utils.controlled_document import get_workflow
+
+	workflow = get_workflow(row.get("parenttype")) if row.get("parenttype") else None
+	if not workflow:
+		return ""
+	roles = set(frappe.get_roles(row.user))
+	for transition in workflow.transitions:
+		if (
+			transition.state == row.from_state
+			and transition.next_state == row.to_state
+			and transition.allowed in roles
+		):
+			return transition.allowed
+	return ""
+
+
 def _signature(caption, row=None):
 	if row is None:
-		return {"caption": caption, "name": "", "designation": "", "date": "", "signed": False}
+		return {"caption": caption, "name": "", "designation": "", "role": "", "date": "", "signed": False}
 	return {
 		"caption": caption,
 		"name": row.full_name or get_fullname(row.user),
 		"designation": _designation(row.user),
+		"role": _role_of(row),
 		"date": formatdate(row.signed_on) if row.signed_on else "",
 		"signed": True,
 	}
@@ -210,3 +229,34 @@ def hse_risk_legend():
 			else (_("Within {0} days").format(row.rectify_within_days) if row.rectify_within_days else "")
 		)
 	return {"rows": rows, "confirmed": bool(frappe.get_cached_doc("HSE Risk Matrix").confirmed_by_krl)}
+
+
+def hse_ppe_pictures(doc, table="ppe"):
+	"""The PPE rows of a document with the picture of each item from the PPE master, in the order given.
+
+	A PPE listed more than once is shown once. The picture is whatever is attached to the item in
+	the master; an item with no picture is still listed, by name.
+	"""
+	seen = set()
+	pictures = []
+	for row in doc.get(table) or []:
+		if not row.ppe or row.ppe in seen:
+			continue
+		seen.add(row.ppe)
+		item = frappe.db.get_value(
+			"HSE PPE Item", row.ppe, ["ppe_name", "standard", "image"], as_dict=True
+		) or frappe._dict(ppe_name=row.ppe)
+		pictures.append(
+			{
+				"name": item.get("ppe_name") or row.ppe,
+				"standard": item.get("standard") or "",
+				"image": item.get("image") or "",
+				"remarks": row.get("remarks") or "",
+			}
+		)
+	return pictures
+
+
+def hse_is_image(path):
+	"""Whether an attached file is a picture that can be shown on a printout."""
+	return (path or "").lower().rsplit(".", 1)[-1] in {"png", "jpg", "jpeg", "gif", "webp", "svg"}
