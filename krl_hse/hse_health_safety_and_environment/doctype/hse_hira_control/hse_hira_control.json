@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "line_ref",
+  "measure_type",
+  "control",
+  "hierarchy_level",
+  "responsible",
+  "target_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "line_ref",
+   "fieldtype": "Select",
+   "label": "Line",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "The line of the risk assessment this measure is for"
+  },
+  {
+   "fieldname": "measure_type",
+   "fieldtype": "Select",
+   "label": "Measure",
+   "options": "Existing\nAdditional",
+   "default": "Additional",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "control",
+   "fieldtype": "Small Text",
+   "label": "Control Measure",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "hierarchy_level",
+   "fieldtype": "Link",
+   "label": "Level of Control",
+   "options": "HSE Hierarchy of Control",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "responsible",
+   "fieldtype": "Link",
+   "label": "Responsible",
+   "options": "Employee",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Needed for an additional measure before the HIRA is sent for review"
+  },
+  {
+   "fieldname": "target_date",
+   "fieldtype": "Date",
+   "label": "Target Date",
+   "in_list_view": 1,
+   "columns": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE HIRA Control",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

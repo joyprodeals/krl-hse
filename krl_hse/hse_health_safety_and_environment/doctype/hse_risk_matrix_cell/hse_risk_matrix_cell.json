@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "consequence",
+  "likelihood",
+  "severity"
+ ],
+ "fields": [
+  {
+   "fieldname": "consequence",
+   "fieldtype": "Link",
+   "label": "Consequence",
+   "options": "HSE Consequence Level",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "likelihood",
+   "fieldtype": "Link",
+   "label": "Likelihood",
+   "options": "HSE Likelihood Level",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Link",
+   "label": "Risk Severity",
+   "options": "HSE Severity Level",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE Risk Matrix Cell",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -22,7 +22,7 @@ approval levels are the workflow of each document type, which KRL can edit in th
 import frappe
 from frappe import _
 from frappe.model.workflow import get_workflow_name
-from frappe.utils import cint, get_fullname, now_datetime, nowdate
+from frappe.utils import add_months, cint, get_fullname, now_datetime, nowdate
 
 from krl_hse.utils.hse_document import HSEDocument
 
@@ -43,6 +43,14 @@ def get_controlled_doctypes():
 	return frappe.get_hooks("hse_controlled_doctypes")
 
 
+def get_review_months(doctype):
+	"""How often a document type is reviewed, from its row in the Document Codes. 0 means never."""
+	for row in get_settings().document_codes:
+		if row.reference_doctype == doctype:
+			return cint(row.review_months)
+	return 0
+
+
 def get_workflow(doctype):
 	name = get_workflow_name(doctype)
 	return frappe.get_cached_doc("Workflow", name) if name else None
@@ -52,6 +60,9 @@ class ControlledDocument(HSEDocument):
 	"""A numbered, branch-tagged, revisioned and approved document. See the module note."""
 
 	number_job_field = "work_order"
+
+	# Fields that are cleared when a revision is started from an approved document.
+	not_carried_to_revision = ("next_review_date", "review_status")
 
 	# --- Numbering ----------------------------------------------------------------------------
 
@@ -73,10 +84,16 @@ class ControlledDocument(HSEDocument):
 		self.validate_content()
 		self.check_ready_for_review()
 		self.stamp_issue_dates()
+		self.set_review_status()
 		self.record_sign_off()
 
 	def validate_content(self):
 		"""Document-specific checks. Override in the document type."""
+
+	def status_notice(self):
+		"""A warning the form shows above an approved or draft document, for example that a document it
+		depends on is no longer in force. Override in the document type. An empty string shows nothing."""
+		return ""
 
 	def review_problems(self):
 		"""What is still missing before this can be sent for review. Override in the document type."""
@@ -151,6 +168,27 @@ class ControlledDocument(HSEDocument):
 		if cint(self.revision_number) > 0:
 			self.revision_date = today
 
+		# A document that is reviewed on a schedule starts its clock when it is approved.
+		if self.meta.has_field("next_review_date"):
+			months = get_review_months(self.doctype)
+			self.next_review_date = add_months(today, months) if months else None
+
+	def set_review_status(self):
+		"""Current, Review Due or Overdue for an approved document that is reviewed on a schedule.
+
+		The daily job (utils/review.py) keeps it up to date after this.
+		"""
+		if not self.meta.has_field("review_status"):
+			return
+
+		from krl_hse.utils.review import review_date_field, review_status_for
+
+		field = review_date_field(self.doctype)
+		if field and self.workflow_state == get_approved_state():
+			self.review_status = review_status_for(self.get(field))
+		else:
+			self.review_status = ""
+
 	def record_sign_off(self):
 		"""Write each change of approval state to the Sign-offs table."""
 		workflow = get_workflow(self.doctype)
@@ -205,13 +243,10 @@ class ControlledDocument(HSEDocument):
 			self.supersede_previous_revision()
 
 	def supersede_previous_revision(self):
-		frappe.db.set_value(
-			self.doctype,
-			self.previous_revision,
-			"workflow_state",
-			get_superseded_state(),
-			update_modified=True,
-		)
+		values = {"workflow_state": get_superseded_state()}
+		if self.meta.has_field("review_status"):
+			values["review_status"] = ""
+		frappe.db.set_value(self.doctype, self.previous_revision, values, update_modified=True)
 		frappe.get_doc(self.doctype, self.previous_revision).add_comment(
 			"Info", _("Superseded by revision {0}, {1}.").format(self.revision_number, self.name)
 		)
@@ -267,10 +302,37 @@ def get_revision_status(doctype, name):
 
 
 @frappe.whitelist()
+def planning_rules():
+	"""The settings a planning document form needs, for users who cannot open HSE Settings."""
+	return {
+		"parent_document_rule": get_settings().parent_document_rule or "Approved only",
+		"approved_state": get_approved_state(),
+	}
+
+
+def _review_state(doctype, name):
+	"""Review status and date of an approved document that is reviewed on a schedule."""
+	from krl_hse.utils.review import review_date_field, review_status_for
+
+	field = review_date_field(doctype)
+	if not field:
+		return None
+	state, date = frappe.db.get_value(doctype, name, ["workflow_state", field])
+	if state != get_approved_state() or not date:
+		return None
+	# Worked out now rather than read, so it is right even before the daily job has run.
+	return {"review_status": review_status_for(date), "review_date": str(date)}
+
+
+@frappe.whitelist()
 def revision_status(doctype, name):
 	"""For the form: where the record stands among its revisions, and whether the user can revise it."""
 	frappe.has_permission(doctype, "read", doc=name, throw=True)
 	status = get_revision_status(doctype, name)
+	review = _review_state(doctype, name)
+	if review:
+		status.update(review)
+	status["notice"] = frappe.get_doc(doctype, name).status_notice() if status["is_latest"] else ""
 	status["can_revise"] = bool(
 		status["is_latest"]
 		and frappe.db.get_value(doctype, name, "workflow_state") == get_approved_state()
@@ -313,6 +375,11 @@ def start_revision(doctype, name, revision_trigger, revision_remark, source_docu
 	new.source_document = source_document
 	new.workflow_state = None
 	new.revision_date = None
+	# What belongs to the earlier revision alone (its review clock, validity, client approval) does
+	# not carry over; the new revision earns its own.
+	for fieldname in doc.not_carried_to_revision:
+		if new.meta.has_field(fieldname):
+			new.set(fieldname, None)
 	new.set("sign_offs", [])
 	new.insert()
 	return new.name

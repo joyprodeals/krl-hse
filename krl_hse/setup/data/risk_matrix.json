@@ -1,0 +1,32 @@
+{
+ "_comment": "Starting mapping only. The handbook shows the matrix as a colour chart and KRL has not yet confirmed which pairs give which severity (question A3). Pairs are rated by consequence level x likelihood level: a score up to max_score gives that severity. KRL edits the matrix in HSE Risk Matrix and ticks Confirmed by KRL. Colours are loaded only for a severity that has none.",
+ "thresholds": [
+  {
+   "max_score": 2,
+   "severity": "Severity I"
+  },
+  {
+   "max_score": 5,
+   "severity": "Severity II"
+  },
+  {
+   "max_score": 10,
+   "severity": "Severity III"
+  },
+  {
+   "max_score": 16,
+   "severity": "Severity IV"
+  },
+  {
+   "max_score": 25,
+   "severity": "Severity V"
+  }
+ ],
+ "colours": {
+  "Severity I": "#7cb342",
+  "Severity II": "#c0ca33",
+  "Severity III": "#fbc02d",
+  "Severity IV": "#fb8c00",
+  "Severity V": "#e53935"
+ }
+}

@@ -102,3 +102,166 @@ def act_on(user, doctype, name, action, **values):
 		doc.update(values)
 		doc.save()
 	return apply_workflow(doc, action)
+
+
+def make_approved_method_statement(branch, work_order, **kw):
+	"""A Method Statement already in force, for tests of the documents that depend on it.
+
+	The approval steps themselves are tested with the Method Statement.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	values = method_statement_content()
+	values.update(kw)
+	ms = make_method_statement(branch, work_order, **values)
+	frappe.db.set_value("HSE Method Statement", ms.name, "workflow_state", get_approved_state())
+	return frappe.get_doc("HSE Method Statement", ms.name)
+
+
+def hira_line(**kw):
+	"""A fully rated HIRA line: Severity III before the controls, Severity I after."""
+	values = {
+		"job": "TEST job",
+		"activity": "TEST: loading slag at the pit",
+		"hazard_category": "Physical",
+		"hazard": "TEST: moving loader near people",
+		"impact_area": "People",
+		"consequence": "C2 Minor",
+		"likelihood": "Possible",
+		"residual_consequence": "C1 Insignificant",
+		"residual_likelihood": "Rare",
+	}
+	values.update(kw)
+	return values
+
+
+def make_hira(branch, method_statement, **kw):
+	values = {
+		"doctype": "HSE HIRA",
+		"branch": branch,
+		"method_statement": method_statement,
+		"lines": [hira_line()],
+	}
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)
+
+
+def sop_step(**kw):
+	values = {
+		"activity": "TEST: isolate the cylinder valve",
+		"hazard_impact": "TEST: gas leak, fire",
+		"responsibility": "TEST Gas cutter",
+		"method": "TEST: close the valve, check with soap solution",
+	}
+	values.update(kw)
+	return values
+
+
+def sop_content(work="TEST Slag handling", **kw):
+	"""The least a SOP needs before it can be sent for review."""
+	from frappe.utils import add_months, nowdate
+
+	values = {
+		"sop_title": "TEST Gas cutting",
+		"purpose": "TEST: cut steel safely",
+		"scope": "TEST: all gas cutting at the pit",
+		"validity_date": add_months(nowdate(), 12),
+		"works": [{"work": work}],
+		"hazards": [{"hazard": "TEST: gas leak", "mitigation": "TEST: leak check before use"}],
+		"steps": [sop_step()],
+	}
+	values.update(kw)
+	return values
+
+
+def make_sop(branch, method_statement, **kw):
+	values = sop_content()
+	values.update({"doctype": "HSE SOP", "branch": branch, "method_statement": method_statement})
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)
+
+
+def override_setting(fieldname, value):
+	"""Change an HSE Settings field for one test. Returns the function that puts it back."""
+	settings = frappe.get_doc("HSE Settings")
+	original = settings.get(fieldname)
+	settings.set(fieldname, value)
+	settings.save(ignore_permissions=True)
+	frappe.clear_cache(doctype="HSE Settings")
+
+	def restore():
+		again = frappe.get_doc("HSE Settings")
+		again.set(fieldname, original)
+		again.save(ignore_permissions=True)
+		frappe.clear_cache(doctype="HSE Settings")
+
+	return restore
+
+
+def override_review_months(doctype, months):
+	"""Change the review period of a document code for one test. Returns the function that restores it."""
+	settings = frappe.get_doc("HSE Settings")
+	row = next(r for r in settings.document_codes if r.reference_doctype == doctype)
+	original = row.review_months
+	row.review_months = months
+	settings.save(ignore_permissions=True)
+	frappe.clear_cache(doctype="HSE Settings")
+
+	def restore():
+		again = frappe.get_doc("HSE Settings")
+		next(r for r in again.document_codes if r.reference_doctype == doctype).review_months = original
+		again.save(ignore_permissions=True)
+		frappe.clear_cache(doctype="HSE Settings")
+
+	return restore
+
+
+def make_approved_sop(branch, method_statement, **kw):
+	"""A SOP already in force, for tests of the documents that depend on it.
+
+	The approval steps themselves are tested with the SOP.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	sop = make_sop(branch, method_statement, **kw)
+	frappe.db.set_value("HSE SOP", sop.name, "workflow_state", get_approved_state())
+	return frappe.get_doc("HSE SOP", sop.name)
+
+
+def jha_hazard(step_ref="A1", **kw):
+	values = {
+		"step_ref": step_ref,
+		"hazard": "TEST: gas leak at the cylinder valve",
+		"impact": "TEST: fire or burns",
+	}
+	values.update(kw)
+	return values
+
+
+def jha_control(hazard_ref="H1", **kw):
+	values = {
+		"hazard_ref": hazard_ref,
+		"control": "TEST: check the joints with soap solution",
+		"hierarchy_level": "Isolation",
+	}
+	values.update(kw)
+	return values
+
+
+def jha_content(**kw):
+	"""The least a JHA needs before it can be sent for review, for a SOP with one step."""
+	values = {
+		"jha_title": "TEST Gas cutting JHA",
+		"analysis_team": [{"person_name": "TEST Gas cutter", "role": "Operator"}],
+		"hazards": [jha_hazard()],
+		"controls": [jha_control()],
+	}
+	values.update(kw)
+	return values
+
+
+def make_jha(branch, sop, **kw):
+	values = jha_content()
+	values.update({"doctype": "HSE JHA", "branch": branch, "sop": sop})
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)

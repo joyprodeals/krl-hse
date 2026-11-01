@@ -152,13 +152,26 @@ hse_branch_doctypes = [
 	"HSE Work Order",
 	"HSE Workplace Area",
 	"HSE Method Statement",
+	"HSE HIRA",
+	"HSE SOP",
+	"HSE JHA",
 ]
 
 # Planning documents with revisions and a lifecycle (krl_hse/utils/controlled_document.py). Each
 # must also be in hse_branch_doctypes above. A test fails if one is missed.
 hse_controlled_doctypes = [
 	"HSE Method Statement",
+	"HSE HIRA",
+	"HSE SOP",
+	"HSE JHA",
 ]
+
+# Document types that are reviewed on a schedule, and the date field that says when. The daily job in
+# krl_hse/utils/review.py marks them Current, Review Due or Overdue and reminds the Branch HSE Head.
+hse_review_date_fields = {
+	"HSE HIRA": "next_review_date",
+	"HSE SOP": "validity_date",
+}
 
 permission_query_conditions = {
 	doctype: "krl_hse.utils.branch_access.permission_query_conditions" for doctype in hse_branch_doctypes
@@ -188,6 +201,12 @@ doc_events = {
 
 # Scheduled Tasks
 # ---------------
+
+scheduler_events = {
+	"daily": [
+		"krl_hse.utils.review.run_daily",
+	],
+}
 
 # scheduler_events = {
 # 	"all": [

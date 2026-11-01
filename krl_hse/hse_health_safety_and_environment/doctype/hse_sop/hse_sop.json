@@ -1,0 +1,585 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "branch",
+  "sop_title",
+  "method_statement",
+  "work_order",
+  "area",
+  "column_break_header",
+  "document_number",
+  "revision_number",
+  "first_issue_date",
+  "revision_date",
+  "validity_date",
+  "review_status",
+  "project_section",
+  "name_of_work",
+  "client_name",
+  "purpose_section",
+  "purpose",
+  "scope",
+  "applicable_to",
+  "column_break_purpose",
+  "definitions",
+  "annexure",
+  "works_section",
+  "works_help",
+  "works",
+  "ppe_section",
+  "ppe",
+  "hazards_section",
+  "hazards_help",
+  "hazards",
+  "rules_section",
+  "rules",
+  "procedure_section",
+  "steps",
+  "distribution_section",
+  "distribution",
+  "pictorial_section",
+  "pictorial_file",
+  "client_format_section",
+  "client_format_applies",
+  "client_format_reference",
+  "client_format_file",
+  "client_department",
+  "client_section",
+  "client_work",
+  "column_break_client",
+  "client_document_number",
+  "client_issue_date",
+  "client_revision_number",
+  "client_revision_date",
+  "client_approval_required",
+  "client_approval_reference",
+  "client_approval_date",
+  "revision_section",
+  "previous_revision",
+  "revision_trigger",
+  "source_document",
+  "revision_remark",
+  "approval_section",
+  "recommendations",
+  "workflow_state",
+  "sign_offs"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "sop_title",
+   "fieldtype": "Data",
+   "label": "SOP Title",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "The procedure, for example Gas Cutting"
+  },
+  {
+   "fieldname": "method_statement",
+   "fieldtype": "Link",
+   "label": "Method Statement",
+   "options": "HSE Method Statement",
+   "in_standard_filter": 1,
+   "description": "The Method Statement this SOP is for. What is accepted is set in HSE Settings."
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Work",
+   "options": "HSE Work Order",
+   "in_standard_filter": 1,
+   "description": "Filled from the Method Statement"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Link",
+   "label": "Area",
+   "options": "HSE Workplace Area",
+   "in_standard_filter": 1,
+   "description": "Leave empty when the SOP applies to the whole branch"
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "document_number",
+   "fieldtype": "Data",
+   "label": "Document Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "revision_number",
+   "fieldtype": "Int",
+   "label": "Revision Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "first_issue_date",
+   "fieldtype": "Date",
+   "label": "First Issue Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revision_date",
+   "fieldtype": "Date",
+   "label": "Revision Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "validity_date",
+   "fieldtype": "Date",
+   "label": "Valid Until",
+   "in_list_view": 1,
+   "no_copy": 1,
+   "description": "Needed before the SOP is sent for review. A reminder is raised before this date."
+  },
+  {
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "label": "Review Status",
+   "options": "\nCurrent\nReview Due\nOverdue",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "project_section",
+   "fieldtype": "Section Break",
+   "label": "Work Details"
+  },
+  {
+   "fieldname": "name_of_work",
+   "fieldtype": "Data",
+   "label": "Name of Work"
+  },
+  {
+   "fieldname": "client_name",
+   "fieldtype": "Data",
+   "label": "Name of Client"
+  },
+  {
+   "fieldname": "purpose_section",
+   "fieldtype": "Section Break",
+   "label": "Purpose and Scope"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Small Text",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "scope",
+   "fieldtype": "Small Text",
+   "label": "Scope"
+  },
+  {
+   "fieldname": "applicable_to",
+   "fieldtype": "Small Text",
+   "label": "Applicable To",
+   "description": "Departments, areas or roles the SOP applies to"
+  },
+  {
+   "fieldname": "column_break_purpose",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "definitions",
+   "fieldtype": "Small Text",
+   "label": "Definitions"
+  },
+  {
+   "fieldname": "annexure",
+   "fieldtype": "Small Text",
+   "label": "Annexure",
+   "description": "Attached documents, drawings or forms the SOP refers to"
+  },
+  {
+   "fieldname": "works_section",
+   "fieldtype": "Section Break",
+   "label": "Works Covered"
+  },
+  {
+   "fieldname": "works_help",
+   "fieldtype": "HTML",
+   "label": "Works Help",
+   "options": "<p class=\"text-muted\">The works of the Method Statement that this SOP covers. This is how the system finds which works have a current SOP.</p>"
+  },
+  {
+   "fieldname": "works",
+   "fieldtype": "Table",
+   "label": "Works",
+   "options": "HSE SOP Work"
+  },
+  {
+   "fieldname": "ppe_section",
+   "fieldtype": "Section Break",
+   "label": "Mandatory PPE"
+  },
+  {
+   "fieldname": "ppe",
+   "fieldtype": "Table",
+   "label": "PPE",
+   "options": "HSE SOP PPE"
+  },
+  {
+   "fieldname": "hazards_section",
+   "fieldtype": "Section Break",
+   "label": "Hazards and Risk Mitigation"
+  },
+  {
+   "fieldname": "hazards_help",
+   "fieldtype": "HTML",
+   "label": "Hazards Help",
+   "options": "<p class=\"text-muted\">One row for each mitigation action. Repeat the hazard for a second action. <b>Add Hazards from HIRA</b> copies the hazards and control measures of an assessment.</p>"
+  },
+  {
+   "fieldname": "hazards",
+   "fieldtype": "Table",
+   "label": "Hazards",
+   "options": "HSE SOP Hazard"
+  },
+  {
+   "fieldname": "rules_section",
+   "fieldtype": "Section Break",
+   "label": "Dos and Don'ts"
+  },
+  {
+   "fieldname": "rules",
+   "fieldtype": "Table",
+   "label": "Dos and Don'ts",
+   "options": "HSE SOP Rule"
+  },
+  {
+   "fieldname": "procedure_section",
+   "fieldtype": "Section Break",
+   "label": "Procedure"
+  },
+  {
+   "fieldname": "steps",
+   "fieldtype": "Table",
+   "label": "Steps",
+   "options": "HSE SOP Step"
+  },
+  {
+   "fieldname": "distribution_section",
+   "fieldtype": "Section Break",
+   "label": "Distribution"
+  },
+  {
+   "fieldname": "distribution",
+   "fieldtype": "Table",
+   "label": "Distribution",
+   "options": "HSE SOP Distribution"
+  },
+  {
+   "fieldname": "pictorial_section",
+   "fieldtype": "Section Break",
+   "label": "Pictorial SOP"
+  },
+  {
+   "fieldname": "pictorial_file",
+   "fieldtype": "Attach",
+   "label": "Pictorial SOP for Display",
+   "description": "The picture version shown at the workplace"
+  },
+  {
+   "fieldname": "client_format_section",
+   "fieldtype": "Section Break",
+   "label": "Client Format and Approval"
+  },
+  {
+   "fieldname": "client_format_applies",
+   "fieldtype": "Check",
+   "label": "The Client Has Instructed Its Own Format",
+   "description": "The client's document governs. The KRL details above are still recorded for the register."
+  },
+  {
+   "fieldname": "client_format_reference",
+   "fieldtype": "Data",
+   "label": "Client Reference Format Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_format_file",
+   "fieldtype": "Attach",
+   "label": "Client Format (Governing Document)",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_department",
+   "fieldtype": "Data",
+   "label": "Client Department",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_section",
+   "fieldtype": "Data",
+   "label": "Client Section",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_work",
+   "fieldtype": "Data",
+   "label": "Client Work",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "column_break_client",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "client_document_number",
+   "fieldtype": "Data",
+   "label": "Client Document Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_issue_date",
+   "fieldtype": "Date",
+   "label": "Client Issue or Effective Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_number",
+   "fieldtype": "Data",
+   "label": "Client Revision Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_date",
+   "fieldtype": "Date",
+   "label": "Client Revision Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_approval_required",
+   "fieldtype": "Check",
+   "label": "Needs the Client's Approval",
+   "description": "Tick when the work is inside a client plant. The principal employer's approval is then recorded before the SOP can be approved."
+  },
+  {
+   "fieldname": "client_approval_reference",
+   "fieldtype": "Data",
+   "label": "Client Approval Reference",
+   "depends_on": "eval:doc.client_approval_required"
+  },
+  {
+   "fieldname": "client_approval_date",
+   "fieldtype": "Date",
+   "label": "Client Approval Date",
+   "depends_on": "eval:doc.client_approval_required"
+  },
+  {
+   "fieldname": "revision_section",
+   "fieldtype": "Section Break",
+   "label": "Revision",
+   "depends_on": "eval:doc.revision_number > 0"
+  },
+  {
+   "fieldname": "previous_revision",
+   "fieldtype": "Link",
+   "label": "Revises",
+   "options": "HSE SOP",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "revision_trigger",
+   "fieldtype": "Link",
+   "label": "What Triggered This Revision",
+   "options": "HSE Revision Trigger",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "source_document",
+   "fieldtype": "Data",
+   "label": "Source Document",
+   "no_copy": 1,
+   "description": "For example the CAPA number, the audit or the client letter"
+  },
+  {
+   "fieldname": "revision_remark",
+   "fieldtype": "Small Text",
+   "label": "What Changed and Why",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Small Text",
+   "label": "Approver's Recommendations",
+   "no_copy": 1,
+   "description": "Required when the approver sends the document back"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Approval Status",
+   "options": "Workflow State",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "sign_offs",
+   "fieldtype": "Table",
+   "label": "Sign-offs",
+   "options": "HSE Sign Off",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-01 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE SOP",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HO HSE Team",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Branch HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HSE Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "Branch Head",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "report": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Director",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "HSE Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Branch Department Head",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Store In-charge",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Employee",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "sop_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "document_number,sop_title,name_of_work",
+ "track_changes": 1,
+ "allow_import": 0
+}

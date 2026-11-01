@@ -8,7 +8,8 @@
   "document_code",
   "number_format",
   "format_number",
-  "format_revision"
+  "format_revision",
+  "review_months"
  ],
  "fields": [
   {
@@ -52,11 +53,19 @@
    "in_list_view": 1,
    "columns": 1,
    "description": "For example 01/24"
+  },
+  {
+   "fieldname": "review_months",
+   "fieldtype": "Int",
+   "label": "Review Every (Months)",
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "0 means no scheduled review. The handbook asks for HIRA every 6 months."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-29 10:00:00.000000",
+ "modified": "2026-11-01 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE Document Code",

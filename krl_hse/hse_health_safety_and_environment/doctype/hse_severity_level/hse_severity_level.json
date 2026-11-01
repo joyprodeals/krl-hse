@@ -7,6 +7,7 @@
   "severity_label",
   "level",
   "harm",
+  "colour",
   "column_break_1",
   "rectify_within_days",
   "rectify_immediately",
@@ -46,6 +47,13 @@
    "label": "Harm",
    "in_list_view": 1,
    "description": "For example Very Low or Critical"
+  },
+  {
+   "fieldname": "colour",
+   "fieldtype": "Color",
+   "label": "Colour",
+   "in_list_view": 1,
+   "description": "Used to colour this severity on the risk matrix and on HIRA lines."
   },
   {
    "fieldname": "column_break_1",
@@ -114,7 +122,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-29 10:00:00.000000",
+ "modified": "2026-11-01 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE Severity Level",

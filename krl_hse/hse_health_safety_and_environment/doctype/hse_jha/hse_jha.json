@@ -1,0 +1,584 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 21:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "branch",
+  "jha_title",
+  "sop",
+  "sop_document_number",
+  "method_statement",
+  "work_order",
+  "area",
+  "column_break_header",
+  "document_number",
+  "revision_number",
+  "first_issue_date",
+  "revision_date",
+  "project_section",
+  "name_of_work",
+  "client_name",
+  "reference_section",
+  "reference_help",
+  "reference_sops",
+  "team_section",
+  "analysis_team",
+  "consulted_section",
+  "consulted_help",
+  "employees_consulted",
+  "resources_section",
+  "resources",
+  "ppe_section",
+  "ppe",
+  "contacts_section",
+  "emergency_contacts",
+  "training_section",
+  "training",
+  "procedure_section",
+  "steps_help",
+  "steps",
+  "hazards_section",
+  "hazards_help",
+  "hazards",
+  "controls_section",
+  "controls_help",
+  "controls",
+  "client_format_section",
+  "client_format_applies",
+  "client_format_reference",
+  "client_format_file",
+  "client_department",
+  "client_section",
+  "client_work",
+  "column_break_client",
+  "client_document_number",
+  "client_issue_date",
+  "client_revision_number",
+  "client_revision_date",
+  "revision_section",
+  "previous_revision",
+  "revision_trigger",
+  "source_document",
+  "revision_remark",
+  "approval_section",
+  "recommendations",
+  "workflow_state",
+  "sign_offs"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "jha_title",
+   "fieldtype": "Data",
+   "label": "JHA Title",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "The job, for example Gas Cutting. Filled from the SOP, and can be changed."
+  },
+  {
+   "fieldname": "sop",
+   "fieldtype": "Link",
+   "label": "SOP",
+   "options": "HSE SOP",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1,
+   "description": "The SOP this JHA is for. What is accepted is set in HSE Settings."
+  },
+  {
+   "fieldname": "sop_document_number",
+   "fieldtype": "Data",
+   "label": "SOP Document Number",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "method_statement",
+   "fieldtype": "Link",
+   "label": "Method Statement",
+   "options": "HSE Method Statement",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "description": "Filled from the SOP"
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Work",
+   "options": "HSE Work Order",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "description": "Filled from the SOP"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Link",
+   "label": "Area",
+   "options": "HSE Workplace Area",
+   "in_standard_filter": 1,
+   "description": "Filled from the SOP. Leave empty when the JHA applies to the whole branch."
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "document_number",
+   "fieldtype": "Data",
+   "label": "Document Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "revision_number",
+   "fieldtype": "Int",
+   "label": "Revision Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "first_issue_date",
+   "fieldtype": "Date",
+   "label": "First Issue Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revision_date",
+   "fieldtype": "Date",
+   "label": "Revision Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "project_section",
+   "fieldtype": "Section Break",
+   "label": "Work Details"
+  },
+  {
+   "fieldname": "name_of_work",
+   "fieldtype": "Data",
+   "label": "Name of Work"
+  },
+  {
+   "fieldname": "client_name",
+   "fieldtype": "Data",
+   "label": "Name of Client"
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Reference SOPs"
+  },
+  {
+   "fieldname": "reference_help",
+   "fieldtype": "HTML",
+   "label": "Reference Help",
+   "options": "<p class=\"text-muted\">The SOP above is always listed first on the print. Add other SOPs this job also follows.</p>"
+  },
+  {
+   "fieldname": "reference_sops",
+   "fieldtype": "Table",
+   "label": "Reference SOPs",
+   "options": "HSE JHA Reference SOP"
+  },
+  {
+   "fieldname": "team_section",
+   "fieldtype": "Section Break",
+   "label": "Hazard Analysis Team"
+  },
+  {
+   "fieldname": "analysis_team",
+   "fieldtype": "Table",
+   "label": "Hazard Analysis Team",
+   "options": "HSE JHA Person"
+  },
+  {
+   "fieldname": "consulted_section",
+   "fieldtype": "Section Break",
+   "label": "Employees Consulted",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "consulted_help",
+   "fieldtype": "HTML",
+   "label": "Consulted Help",
+   "options": "<p class=\"text-muted\">The employees asked about the hazards of this job, including hazards that were never recorded.</p>"
+  },
+  {
+   "fieldname": "employees_consulted",
+   "fieldtype": "Table",
+   "label": "Employees Consulted",
+   "options": "HSE JHA Person"
+  },
+  {
+   "fieldname": "resources_section",
+   "fieldtype": "Section Break",
+   "label": "Equipment and Resources"
+  },
+  {
+   "fieldname": "resources",
+   "fieldtype": "Table",
+   "label": "Equipment and Resources",
+   "options": "HSE JHA Resource"
+  },
+  {
+   "fieldname": "ppe_section",
+   "fieldtype": "Section Break",
+   "label": "Mandatory PPE Recommended"
+  },
+  {
+   "fieldname": "ppe",
+   "fieldtype": "Table",
+   "label": "PPE",
+   "options": "HSE JHA PPE"
+  },
+  {
+   "fieldname": "contacts_section",
+   "fieldtype": "Section Break",
+   "label": "Emergency Contacts"
+  },
+  {
+   "fieldname": "emergency_contacts",
+   "fieldtype": "Table",
+   "label": "Emergency Contacts",
+   "options": "HSE JHA Contact"
+  },
+  {
+   "fieldname": "training_section",
+   "fieldtype": "Section Break",
+   "label": "Training to Be Imparted"
+  },
+  {
+   "fieldname": "training",
+   "fieldtype": "Table",
+   "label": "Training",
+   "options": "HSE JHA Training"
+  },
+  {
+   "fieldname": "procedure_section",
+   "fieldtype": "Section Break",
+   "label": "Procedure"
+  },
+  {
+   "fieldname": "steps_help",
+   "fieldtype": "HTML",
+   "label": "Steps Help",
+   "options": "<p class=\"text-muted\"><b>1. Steps.</b> List the job activities in order, as detailed as possible. <b>Add Steps from SOP</b> copies the steps of the SOP.</p>"
+  },
+  {
+   "fieldname": "steps",
+   "fieldtype": "Table",
+   "label": "Steps",
+   "options": "HSE JHA Step"
+  },
+  {
+   "fieldname": "hazards_section",
+   "fieldtype": "Section Break",
+   "label": "Hazards"
+  },
+  {
+   "fieldname": "hazards_help",
+   "fieldtype": "HTML",
+   "label": "Hazards Help",
+   "options": "<p class=\"text-muted\"><b>2. Hazards.</b> One row for each hazard of a step. A step can have several. <b>Add Hazards from HIRA</b> copies hazards and their control measures from an assessment.</p>"
+  },
+  {
+   "fieldname": "hazards",
+   "fieldtype": "Table",
+   "label": "Hazards",
+   "options": "HSE JHA Hazard"
+  },
+  {
+   "fieldname": "controls_section",
+   "fieldtype": "Section Break",
+   "label": "Safeguards and Control Measures"
+  },
+  {
+   "fieldname": "controls_help",
+   "fieldtype": "HTML",
+   "label": "Controls Help",
+   "options": "<p class=\"text-muted\"><b>3. Control measures.</b> Every hazard needs at least one, tagged to a level of the hierarchy of control.</p>"
+  },
+  {
+   "fieldname": "controls",
+   "fieldtype": "Table",
+   "label": "Control Measures",
+   "options": "HSE JHA Control"
+  },
+  {
+   "fieldname": "client_format_section",
+   "fieldtype": "Section Break",
+   "label": "Client Format",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "client_format_applies",
+   "fieldtype": "Check",
+   "label": "The Client Has Instructed Its Own Format",
+   "description": "The client's document governs. The KRL details above are still recorded for the register."
+  },
+  {
+   "fieldname": "client_format_reference",
+   "fieldtype": "Data",
+   "label": "Client Reference Format Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_format_file",
+   "fieldtype": "Attach",
+   "label": "Client Format (Governing Document)",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_department",
+   "fieldtype": "Data",
+   "label": "Client Department",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_section",
+   "fieldtype": "Data",
+   "label": "Client Section",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_work",
+   "fieldtype": "Data",
+   "label": "Client Work",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "column_break_client",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "client_document_number",
+   "fieldtype": "Data",
+   "label": "Client Document Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_issue_date",
+   "fieldtype": "Date",
+   "label": "Client Issue or Effective Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_number",
+   "fieldtype": "Data",
+   "label": "Client Revision Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_date",
+   "fieldtype": "Date",
+   "label": "Client Revision Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "revision_section",
+   "fieldtype": "Section Break",
+   "label": "Revision",
+   "depends_on": "eval:doc.revision_number > 0"
+  },
+  {
+   "fieldname": "previous_revision",
+   "fieldtype": "Link",
+   "label": "Revises",
+   "options": "HSE JHA",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "revision_trigger",
+   "fieldtype": "Link",
+   "label": "What Triggered This Revision",
+   "options": "HSE Revision Trigger",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "source_document",
+   "fieldtype": "Data",
+   "label": "Source Document",
+   "no_copy": 1,
+   "description": "For example the CAPA number, the audit or the client letter"
+  },
+  {
+   "fieldname": "revision_remark",
+   "fieldtype": "Small Text",
+   "label": "What Changed and Why",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Small Text",
+   "label": "Approver's Recommendations",
+   "no_copy": 1,
+   "description": "Required when the approver sends the document back"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Approval Status",
+   "options": "Workflow State",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "sign_offs",
+   "fieldtype": "Table",
+   "label": "Sign-offs",
+   "options": "HSE Sign Off",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-01 21:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE JHA",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HO HSE Team",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Branch HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HSE Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "Branch Head",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "report": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Director",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "HSE Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Branch Department Head",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Store In-charge",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Employee",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "jha_title",
+ "show_title_field_in_link": 1,
+ "search_fields": "document_number,jha_title,name_of_work",
+ "track_changes": 1,
+ "allow_import": 0
+}

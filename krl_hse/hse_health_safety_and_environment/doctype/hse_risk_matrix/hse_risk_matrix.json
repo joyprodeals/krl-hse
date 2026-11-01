@@ -1,0 +1,129 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "issingle": 1,
+ "field_order": [
+  "status_section",
+  "confirmed_by_krl",
+  "confirmation_note",
+  "preview_section",
+  "matrix_preview",
+  "cells_section",
+  "cells"
+ ],
+ "fields": [
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "fieldname": "confirmed_by_krl",
+   "fieldtype": "Check",
+   "label": "Confirmed by KRL",
+   "description": "Tick when KRL has confirmed which combinations give which severity. Until then every HIRA shows a banner that the matrix is provisional."
+  },
+  {
+   "fieldname": "confirmation_note",
+   "fieldtype": "Small Text",
+   "label": "Confirmation Note",
+   "description": "Who at KRL confirmed it, and when."
+  },
+  {
+   "fieldname": "preview_section",
+   "fieldtype": "Section Break",
+   "label": "Matrix"
+  },
+  {
+   "fieldname": "matrix_preview",
+   "fieldtype": "HTML",
+   "label": "Matrix Preview"
+  },
+  {
+   "fieldname": "cells_section",
+   "fieldtype": "Section Break",
+   "label": "Combinations"
+  },
+  {
+   "fieldname": "cells",
+   "fieldtype": "Table",
+   "label": "Combinations",
+   "options": "HSE Risk Matrix Cell",
+   "description": "One row for every consequence and likelihood pair. The risk severity of a HIRA line comes from here."
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE Risk Matrix",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "HSE Head",
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "HO HSE Team",
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Director",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Branch HSE Head",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "HSE Officer",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "HSE Supervisor",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Branch Head",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Branch Department Head",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Store In-charge",
+   "read": 1,
+   "write": 0
+  },
+  {
+   "role": "Employee",
+   "read": 1,
+   "write": 0
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

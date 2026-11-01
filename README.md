@@ -9,7 +9,7 @@ Each phase has a demo, a KRL feedback gate and a sign-off test.
 | Phase | Content | Status |
 |-------|---------|--------|
 | 1 | Settings, document numbering, branches, roles, work order, workplace area, approval workflow | Built |
-| 2 | Planning documents: Method Statement (built), HIRA, SOP, JHA, Work Procedure Window | In progress. The Method Statement with approval, revisions and print format is ready to test. |
+| 2 | Planning documents: Method Statement (built), HIRA (built), SOP (built), JHA (built), Work Procedure Window | In progress. The Method Statement, the HIRA with its risk matrix, the SOP with its review reminders, and the JHA are ready to test, each with its print format. |
 | 3 onward | See the "KRL HSE Phased Development Plan" | Not started |
 
 Nothing is hard-coded to KRL. Everything KRL may want to change is a record that can be edited
@@ -77,13 +77,104 @@ A new type is added to `hse_controlled_doctypes` (and `hse_branch_doctypes`) in 
   documents are built, a link to the real record is added beside the typed number, so older paper references still fit.
 * The names of the approved and superseded states, the sent-back state, the format number and revision of each
   form and the "internal document" line are HSE Settings, not code.
+* A document type that is reviewed on a schedule names its date field in `hse_review_date_fields` in `hooks.py`
+  (HIRA: `next_review_date`, SOP: `validity_date`). See "Review dates and reminders" below.
+
+### HIRA and the risk matrix (Phase 2)
+
+* **HSE HIRA** follows KRL's format KRL/HSE/HIRA/1: header, one line for each hazard of each activity, control
+  measures, the client's own format block. It belongs to a Method Statement. HSE Settings says what is accepted
+  (Approved only, Any state, Not required).
+* The consequence and likelihood are chosen, and the severity follows from **HSE Risk Matrix** (before and after the
+  controls). Nothing about the matrix is in code: the scales, the severities, their colours and the pairs are masters.
+  Until KRL ticks "Confirmed by KRL", the starting mapping is shown as provisional on every HIRA.
+* A line gets a stable reference (L1, L2, ...) that stays when lines are moved or removed. Control measures are
+  tied to a line by it, and each is tagged to a level of the **Hierarchy of Control**.
+* A HIRA cannot be sent for review while a line is unrated, a line whose severity stops work has no control
+  measure, an additional measure has no responsible person or target date, or the risk after controls is higher than
+  before. HSE Settings can also block review while a work-stopping risk remains after the controls.
+* The worst risk left after controls is kept on the document, for the list and the cross-site risk register.
+* Three approval levels, as a workflow KRL can edit: HSE Officer or Branch HSE Head prepares, Branch HSE Head
+  reviews, Branch Head approves. The order and the approvers are open questions to KRL (A1 and A2).
+
+### SOP (Phase 2)
+
+* **HSE SOP** follows KRL's format KRL/HSE/SOP/1. It belongs to a Method Statement (HSE Settings says whether
+  that must be approved) and to a workplace area. One SOP can cover several works of the Method Statement, or works
+  common to every Method Statement. It cannot list the same work twice or a work the Method Statement does not have.
+* Content: purpose, scope, who it applies to, definitions, the mandatory PPE (the basic PPE is filled in on a new
+  SOP from the PPE master), the hazards with their mandatory mitigation actions, the Dos and Don'ts, the step by
+  step procedure (steps get stable references S1, S2, ... that survive moving and removing rows), the annexure, the
+  distribution list, and the client's own format block and client approval where the client requires it.
+* **Add Hazards from HIRA** on the hazards table copies the hazards and control measures of a HIRA of the same
+  branch and Method Statement into the table, for the user to trim. It does not copy a row twice, and each row
+  remembers which HIRA line it came from.
+* A SOP has a **validity date** (set from "Review Every (Months)" in the document codes when that is above 0, and
+  always editable). It cannot be in the past, and an expired SOP cannot be approved.
+* A picture of the SOP made for display can be attached (a picture is printed on its own page; a PDF is only named).
+* Approval is a workflow KRL can edit: HSE Officer or Branch HSE Head prepares, Branch HSE Head reviews, Branch Head
+  approves, HO HSE Team gives the final approval. A revision skips the Branch HSE Head step, because the reviewer
+  has already seen the document. The BRD says the head office approval is for company-wide SOPs; it is built for
+  every SOP until KRL answers.
+* When a SOP is approved the people on its distribution list get a notification.
+
+### JHA (Phase 2)
+
+* **HSE JHA** (Job Hazard Analysis) follows KRL's format KRL/HSE/JHA/1. It is made for one SOP. The branch, Method
+  Statement, work order, area and title come from that SOP, and a new JHA starts with the steps and PPE of the SOP and
+  the emergency numbers of its Method Statement, for the user to complete.
+* **Parent rule.** The same setting as for the HIRA and the SOP ("Parent Document Needed Before a HIRA, SOP or JHA")
+  decides whether the SOP must be approved and in force. With "Approved only" a SOP that has expired or has been
+  replaced cannot be chosen for a new JHA, and the message names the SOP that replaced it. A JHA always needs a SOP.
+* **One JHA for each SOP** is a setting (**JHAs for Each SOP** in HSE Settings: "One for each SOP", the default, or
+  "More than one allowed") because KRL has not answered it yet. A revision is never blocked by it.
+* Content: the SOPs the job follows (the main SOP is always listed first, others may be picked or typed), the hazard
+  analysis team (required) and the employees consulted, the equipment and resources, the mandatory PPE, the emergency
+  contacts, the training to be imparted, and the client's own format block where the client requires it.
+* The analysis is three linked tables with stable references that survive moving and removing rows: **steps** (A1,
+  A2, ... each can point to the SOP step it came from), **hazards** (H1, H2, ... each belongs to a step) and
+  **control measures** (each belongs to a hazard and says its level in the hierarchy of control).
+  **Add Steps from SOP** copies steps that are not in the JHA yet. **Add Hazards from HIRA** picks a step, a HIRA of
+  the same branch and Method Statement and some of its lines, and copies each line as a hazard of that step with its
+  control measures (the existing safeguard of the line becomes a control measure with no level). A line is never
+  copied twice to the same step, and each hazard remembers its HIRA line.
+* **Ready for review.** A JHA cannot be sent for review until it has at least one step, a hazard analysis team, at
+  least one hazard for every step, an impact for every hazard, at least one control measure for every hazard, and a
+  hierarchy level on every control measure. These are assumptions (a step with no hazard is not accepted, for
+  example) that KRL can change.
+* Approval is the same workflow as the SOP: Branch HSE Head reviews, Branch Head approves, HO HSE Team gives the
+  final approval; a revision skips the Branch HSE Head step. A JHA has no review date, so it has no reminders.
+* The form says so when the SOP of a JHA has since been replaced, has expired or is no longer approved, and a
+  revision can move to a later revision of the same SOP but not to a different SOP.
+* Not built yet: updating a JHA during the job (new hazards found while working). An approved JHA is frozen, so that
+  belongs with the work permit and execution phase.
+
+### Review dates and reminders
+
+* A controlled document that is reviewed on a schedule shows **Current**, **Review Due** or **Overdue**, from its
+  review date and the **Review Reminder (Days Before Due)** in HSE Settings (default 30). A banner on the form shows it, and it
+  is kept in `review_status` for lists.
+* A daily job (`krl_hse.utils.review.run_daily`) updates the status and sends one reminder when a document becomes
+  due and one when it becomes overdue. A reminder is a ToDo and a notification for the Branch HSE Head users who
+  have that branch, or for HSE Head users if there are none. The notification does not send email.
+* A revision starts with no review date and no review status; they are set again when it is approved. A
+  "Scheduled Review" is one of the revision triggers.
+* `krl_hse.utils.review.in_force_conditions(doctype)` gives the filters for "approved, not superseded, not expired".
+  The JHA and the work permit will use it, so an expired SOP cannot be picked.
 
 ### Print formats
 
 A print format is an HTML template in `hse_health_safety_and_environment/print_format/`, black and white, so it can
 be handed to a client. The header repeats on each page with the format number, revision, document number, issue
 date and revision date. The footer carries the internal-document line and the page number. These come from HSE
-Settings (document code rows, "Printing" section) and from `krl_hse/utils/printing.py`. The PDF needs wkhtmltopdf with
+Settings (document code rows, "Printing" section) and from `krl_hse/utils/printing.py`. A document that is not
+approved says so in the header, and a superseded one says a later revision is in force. The signature boxes
+(Prepared, Reviewed, Approved) are read from the Sign-offs and name the role each person signed in. The SOP print
+shows the PPE pictures from the PPE master, groups the actions of one hazard under that hazard, and prints the
+pictorial SOP on its own page. The JHA print has the six rows of the paper form (reference SOPs, hazard analysis
+team, equipment and resources, emergency contacts, training, PPE) and then one table: each step of the job, the
+hazards of that step (one row each, the step cells span them), their impact and the numbered control measures with
+their level of control. It has no valid-until date, because a JHA is not reviewed on a schedule. The PDF needs wkhtmltopdf with
 patched Qt, as on Frappe Cloud. A build without it prints the PDF without the repeated header and footer.
 
 ### Document numbers
@@ -102,7 +193,7 @@ Use two sites, and never mix them.
 | `demo.test` | Demo data and checking the screens in a browser. |
 
 ```bash
-# tests (144 so far)
+# tests (442 so far)
 bench --site krl.test run-tests --app krl_hse
 
 # demo data (dev only, never runs on install; every record is named TEST ...)
@@ -114,8 +205,10 @@ bench --site demo.test execute krl_hse.demo.seed.clear           # archive
 bench --site demo.test execute krl_hse.demo.seed.clear --kwargs "{'delete': 1}"   # delete
 ```
 
-The demo load also makes one draft Method Statement for each of the two sample jobs. `clear` resets them to Draft
-before it deletes them.
+The demo load also makes one draft Method Statement for each of the two sample jobs. A HIRA and a SOP need an
+approved Method Statement, and a JHA needs an approved SOP, so the sample HIRA and SOP for a job are made the next time
+the load runs after its Method Statement has been approved, and the sample JHA the next time after its SOP has been
+approved. `clear` resets them to Draft before it deletes them.
 
 Demo users are `test.<key>@krl-demo.example`, one per role. The sample people and records refer to
 branches by code: J and T carry the two sample jobs, and anything whose code is not on the site is skipped

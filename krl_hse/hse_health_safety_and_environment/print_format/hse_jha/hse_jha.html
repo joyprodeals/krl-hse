@@ -1,0 +1,398 @@
+{#-
+	JHA print layout (KRL/HSE/JHA/1, BRD 6.1.4). Portrait, black and white.
+
+	Built the same way as the SOP print: nothing KRL may want to change is typed here. The format number and
+	revision, the internal document line and the signatures come from HSE Settings and from the Sign-offs table
+	of the document (see krl_hse/utils/printing.py). The pictures of the PPE are the ones attached to the items
+	in the PPE master.
+
+	The procedure table reads as the paper form does: each step of the job, the hazards of that step, their
+	impact and the control measures. A step with several hazards has one row for each hazard, and the step
+	cells span them.
+-#}
+{%- set ctx = hse_print_context(doc) -%}
+{%- set ppe = hse_ppe_pictures(doc) -%}
+{%- macro text(value) -%}{{ (value or "")|string|e|replace("\n", "<br>") }}{%- endmacro -%}
+{%- macro date(value) -%}{{ frappe.utils.formatdate(value) if value else "" }}{%- endmacro -%}
+{%- set main_sop = frappe.db.get_value("HSE SOP", doc.sop, ["sop_title", "document_number", "revision_number"], as_dict=True) if doc.sop else None -%}
+
+<style>
+	.hse-print { font-family: Arial, Helvetica, sans-serif; color: #000; font-size: 9.5pt; line-height: 1.3; }
+	.hse-print table { width: 100%; border-collapse: collapse; margin: 0 0 9px 0; }
+	.hse-print td, .hse-print th { border: 1px solid #000; padding: 3px 5px; vertical-align: top; text-align: left; color: #000; background: #fff; }
+	.hse-print tr { page-break-inside: avoid; }
+	.hse-print thead { display: table-header-group; }
+	.hse-print th { font-weight: bold; }
+	.hse-print th.hse-sec { font-size: 10.5pt; border-bottom: 2px solid #000; }
+	.hse-print td.hse-lbl, .hse-print th.hse-col { font-weight: bold; }
+	.hse-print .hse-no { width: 6%; text-align: center; }
+	.hse-print .hse-small { font-size: 8pt; }
+	.hse-print .hse-title { font-size: 13pt; font-weight: bold; margin: 0 0 6px 0; }
+	.hse-print .hse-note { margin: 0 0 9px 0; border: 1px solid #000; padding: 3px 5px; font-weight: bold; }
+	.hse-print .hse-line { margin: 0 0 2px 0; }
+	.hse-print .hse-ppe td { width: 25%; text-align: center; vertical-align: middle; height: 78px; }
+	.hse-print .hse-ppe img { max-height: 52px; max-width: 90%; }
+	.hse-print .hse-ppe .hse-empty { border: 0; }
+	.hse-print .hse-ppe-name { font-weight: bold; font-size: 8.5pt; }
+	.hse-print .hse-info td.hse-lbl { width: 22%; }
+	.hse-print .hse-proc { table-layout: fixed; }
+	.hse-print .hse-proc td, .hse-print .hse-proc th { font-size: 8.5pt; word-wrap: break-word; }
+	.hse-print .hse-proc th.hse-sec { font-size: 10.5pt; }
+	.hse-print .hse-proc ol { margin: 0; padding-left: 14px; }
+	.hse-print .hse-proc li { margin: 0 0 2px 0; }
+	.hse-print .hse-ref { font-weight: bold; }
+
+	.hse-head { width: 100%; border-collapse: collapse; margin: 0; }
+	.hse-head td { border: 1px solid #000; padding: 3px 5px; vertical-align: middle; font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: #000; }
+	.hse-head .hse-company { font-size: 13pt; font-weight: bold; }
+	.hse-head .hse-doctitle { font-size: 11pt; font-weight: bold; margin-top: 2px; }
+	.hse-head .hse-lbl { font-weight: bold; white-space: nowrap; }
+	.hse-head .hse-val { white-space: nowrap; }
+	.hse-head .hse-status { font-weight: bold; text-align: center; }
+
+	.hse-foot { width: 100%; border-collapse: collapse; margin: 0; }
+	.hse-foot td { border: 0; border-top: 1px solid #000; padding: 3px 2px; font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: #000; }
+	.hse-foot td.hse-page { text-align: right; white-space: nowrap; }
+
+	.hse-sign td { width: {{ (100 / (ctx.signatures|length))|round(2) }}%; }
+	.hse-sign .hse-space { height: 42px; }
+	.hse-sign .hse-caption { font-weight: bold; }
+</style>
+
+<div id="header-html" class="hidden-pdf">
+	<table class="hse-head">
+		<tr>
+			<td rowspan="2" style="width: 62%;">
+				<div class="hse-company">{{ ctx.company|e }}</div>
+				<div class="hse-doctitle">{{ _("Job Hazard Analysis") }}</div>
+			</td>
+			<td class="hse-lbl" style="width: 14%;">{{ _("Format No.") }}</td>
+			<td>{{ ctx.format_number|e }}</td>
+		</tr>
+		<tr>
+			<td class="hse-lbl">{{ _("Revision") }}</td>
+			<td>{{ ctx.format_revision|e }}</td>
+		</tr>
+	</table>
+	<table class="hse-head">
+		<tr>
+			<td class="hse-lbl">{{ _("Document Number") }}</td>
+			<td class="hse-val">{{ (doc.document_number or doc.name)|e }}</td>
+			<td class="hse-lbl">{{ _("Issue Date") }}</td>
+			<td class="hse-val">{{ date(doc.first_issue_date) }}</td>
+			<td class="hse-lbl">{{ _("SOP") }}</td>
+			<td>{{ text(doc.sop_document_number) }}</td>
+		</tr>
+		<tr>
+			<td class="hse-lbl">{{ _("Revision No.") }}</td>
+			<td>{{ "%02d"|format(doc.revision_number or 0) }}</td>
+			<td class="hse-lbl">{{ _("Revision Date") }}</td>
+			<td class="hse-val">{{ date(doc.revision_date) }}</td>
+			<td class="hse-lbl">{{ _("Method Statement") }}</td>
+			<td>{{ text(doc.method_statement) }}</td>
+		</tr>
+		{%- if not ctx.is_approved %}
+		<tr>
+			<td colspan="6" class="hse-status">
+				{%- if ctx.is_superseded -%}
+					{{ _("SUPERSEDED. A later revision is in force.") }}
+				{%- else -%}
+					{{ _("NOT APPROVED. Status: {0}").format(_(ctx.state or "Draft")) }}
+				{%- endif -%}
+			</td>
+		</tr>
+		{%- endif %}
+	</table>
+</div>
+
+<div class="hse-print">
+
+	<div class="hse-title">{{ text(doc.jha_title) }}</div>
+
+	{#- Project details #}
+	<table>
+		<thead><tr><th class="hse-sec" colspan="4">{{ _("Project Details") }}</th></tr></thead>
+		<tbody>
+			<tr>
+				<td class="hse-lbl" style="width: 17%;">{{ _("Branch") }}</td>
+				<td style="width: 33%;">{{ text(doc.branch) }}</td>
+				<td class="hse-lbl" style="width: 17%;">{{ _("Work") }}</td>
+				<td>{{ text(doc.work_order) }}</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Name of Work") }}</td>
+				<td colspan="3">{{ text(doc.name_of_work) }}</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Name of Client") }}</td>
+				<td colspan="3">{{ text(doc.client_name) }}</td>
+			</tr>
+			{%- if doc.area %}
+			<tr>
+				<td class="hse-lbl">{{ _("Area") }}</td>
+				<td colspan="3">{{ text(frappe.db.get_value("HSE Workplace Area", doc.area, "area_name") or doc.area) }}</td>
+			</tr>
+			{%- endif %}
+		</tbody>
+	</table>
+
+	{#- Client document details, when the client has instructed its own format #}
+	{%- if doc.client_format_applies %}
+	<table>
+		<thead><tr><th class="hse-sec" colspan="8">{{ _("Client Document Details") }}</th></tr></thead>
+		<tbody>
+			<tr>
+				<td class="hse-lbl" style="width: 11%;">{{ _("Reference Format No.") }}</td>
+				<td style="width: 14%;">{{ text(doc.client_format_reference) }}</td>
+				<td class="hse-lbl" style="width: 9%;">{{ _("Department") }}</td>
+				<td style="width: 14%;">{{ text(doc.client_department) }}</td>
+				<td class="hse-lbl" style="width: 8%;">{{ _("Section") }}</td>
+				<td style="width: 14%;">{{ text(doc.client_section) }}</td>
+				<td class="hse-lbl" style="width: 7%;">{{ _("Work") }}</td>
+				<td>{{ text(doc.client_work) }}</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Document No.") }}</td>
+				<td>{{ text(doc.client_document_number) }}</td>
+				<td class="hse-lbl">{{ _("Issue Date") }}</td>
+				<td>{{ date(doc.client_issue_date) }}</td>
+				<td class="hse-lbl">{{ _("Revision No.") }}</td>
+				<td>{{ text(doc.client_revision_number) }}</td>
+				<td class="hse-lbl">{{ _("Revision Date") }}</td>
+				<td>{{ date(doc.client_revision_date) }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="hse-note">
+		{{ _("The client has instructed its own format, and that document governs.") }}
+	</div>
+	{%- endif %}
+
+	{#- The six rows of the paper form. A row with nothing in it is still printed, so the form keeps its shape. #}
+	<table class="hse-info">
+		<tbody>
+			<tr>
+				<td class="hse-lbl">{{ _("Reference SOPs") }}</td>
+				<td>
+					{%- if main_sop %}
+					<div class="hse-line">
+						{{ text(main_sop.document_number) }}{% if main_sop.revision_number %} ({{ _("Revision") }} {{ "%02d"|format(main_sop.revision_number) }}){% endif %}: {{ text(main_sop.sop_title) }}
+					</div>
+					{%- endif %}
+					{%- for row in doc.reference_sops %}
+					{%- set other = frappe.db.get_value("HSE SOP", row.sop, ["sop_title", "document_number"], as_dict=True) if row.sop else None %}
+					<div class="hse-line">
+						{%- if other %}{{ text(other.document_number) }}: {{ text(other.sop_title) }}{% else %}{{ text(row.reference) }}{% endif %}
+						{%- if row.remarks %} <span class="hse-small">({{ text(row.remarks) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Hazard Analysis Team") }}</td>
+				<td>
+					{%- for row in doc.analysis_team %}
+					<div class="hse-line">
+						{{ loop.index }}. {{ text(row.person_name or row.employee) }}
+						{%- if row.designation %}, {{ text(row.designation) }}{% endif %}
+						{%- if row.role %} <span class="hse-small">({{ text(row.role) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+			{%- if doc.employees_consulted %}
+			<tr>
+				<td class="hse-lbl">{{ _("Employees Consulted") }}</td>
+				<td>
+					{%- for row in doc.employees_consulted %}
+					<div class="hse-line">
+						{{ loop.index }}. {{ text(row.person_name or row.employee) }}
+						{%- if row.designation %}, {{ text(row.designation) }}{% endif %}
+						{%- if row.role %} <span class="hse-small">({{ text(row.role) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+			{%- endif %}
+			<tr>
+				<td class="hse-lbl">{{ _("Equipment and Resources") }}</td>
+				<td>
+					{%- for row in doc.resources %}
+					<div class="hse-line">
+						{{ loop.index }}. {{ text(row.resource) }}
+						{%- if row.qty %} <span class="hse-small">({{ _("Qty") }}: {{ row.qty|int if row.qty == row.qty|int else row.qty }})</span>{% endif %}
+						{%- if row.remarks %} <span class="hse-small">({{ text(row.remarks) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Emergency Contacts") }}</td>
+				<td>
+					{%- for row in doc.emergency_contacts %}
+					<div class="hse-line">
+						<b>{{ text(row.contact_type) }}</b>{% if row.phone %}: {{ text(row.phone) }}{% endif %}
+						{%- if row.details %} <span class="hse-small">({{ text(row.details) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+			<tr>
+				<td class="hse-lbl">{{ _("Training to be Imparted") }}</td>
+				<td>
+					{%- for row in doc.training %}
+					<div class="hse-line">
+						{{ loop.index }}. {{ text(row.topic) }}
+						{%- if row.for_whom %} <span class="hse-small">({{ _("For") }}: {{ text(row.for_whom) }})</span>{% endif %}
+						{%- if row.remarks %} <span class="hse-small">({{ text(row.remarks) }})</span>{% endif %}
+					</div>
+					{%- endfor %}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{#- Mandatory PPE recommended, shown as pictures, four to a row #}
+	{%- if ppe %}
+	<table class="hse-ppe">
+		<thead><tr><th class="hse-sec" colspan="4">{{ _("Mandatory PPE Recommended") }}</th></tr></thead>
+		<tbody>
+			{%- for row in ppe|batch(4) %}
+			<tr>
+				{%- for item in row %}
+				<td>
+					{%- if item.image %}<img src="{{ item.image|e }}" alt="{{ item.name|e }}"><br>{% endif %}
+					<span class="hse-ppe-name">{{ text(item.name) }}</span>
+					{%- if item.standard %}<br><span class="hse-small">{{ text(item.standard) }}</span>{% endif %}
+					{%- if item.remarks %}<br><span class="hse-small">{{ text(item.remarks) }}</span>{% endif %}
+				</td>
+				{%- endfor %}
+				{%- for _fill in range(4 - (row|length)) %}<td class="hse-empty"></td>{% endfor %}
+			</tr>
+			{%- endfor %}
+		</tbody>
+	</table>
+	{%- endif %}
+
+	{#- The analysis: step, hazards of the step, impact, control measures #}
+	<table class="hse-proc">
+		<colgroup>
+			<col style="width: 5%;"><col style="width: 21%;"><col style="width: 24%;"><col style="width: 17%;"><col style="width: 33%;">
+		</colgroup>
+		<thead>
+			<tr><th class="hse-sec" colspan="5">{{ _("Job Hazard Analysis") }}</th></tr>
+			<tr>
+				<th class="hse-col">{{ _("Step") }}</th>
+				<th class="hse-col">{{ _("Sequence of Job Steps (Activity)") }}</th>
+				<th class="hse-col">{{ _("Potential Hazard") }}</th>
+				<th class="hse-col">{{ _("Impact") }}</th>
+				<th class="hse-col">{{ _("Safeguard and Control Measures") }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%- for step in doc.steps %}
+			{%- set step_hazards = doc.hazards|selectattr("step_ref", "equalto", step.step_ref)|list %}
+			{%- for hazard in step_hazards or [None] %}
+			<tr>
+				{%- if loop.first %}
+				<td class="hse-no" rowspan="{{ [step_hazards|length, 1]|max }}"><span class="hse-ref">{{ text(step.step_ref) }}</span></td>
+				<td rowspan="{{ [step_hazards|length, 1]|max }}">
+					{{ text(step.activity) }}
+					{%- if step.sop_step_ref %}<br><span class="hse-small">{{ _("SOP step") }} {{ text(step.sop_step_ref) }}</span>{% endif %}
+					{%- if step.remarks %}<br><span class="hse-small">{{ text(step.remarks) }}</span>{% endif %}
+				</td>
+				{%- endif %}
+				{%- if hazard %}
+				<td>
+					<span class="hse-ref">{{ text(hazard.hazard_ref) }}</span> {{ text(hazard.hazard) }}
+					{%- if hazard.source %}<br><span class="hse-small">{{ _("Source") }}: {{ text(hazard.source) }}</span>{% endif %}
+					{%- if hazard.environment %}<br><span class="hse-small">{{ _("Environment") }}: {{ text(hazard.environment) }}</span>{% endif %}
+					{%- if hazard.cause %}<br><span class="hse-small">{{ _("Cause") }}: {{ text(hazard.cause) }}</span>{% endif %}
+					{%- if hazard.trigger_condition %}<br><span class="hse-small">{{ _("Triggered when") }}: {{ text(hazard.trigger_condition) }}</span>{% endif %}
+					{%- if hazard.hira %}<br><span class="hse-small">{{ _("HIRA") }}: {{ hazard.hira|e }}{% if hazard.hira_line %}, {{ _("line") }} {{ hazard.hira_line|e }}{% endif %}</span>{% endif %}
+				</td>
+				<td>{{ text(hazard.impact) }}</td>
+				<td>
+					{%- set hazard_controls = doc.controls|selectattr("hazard_ref", "equalto", hazard.hazard_ref)|list %}
+					{%- if hazard_controls %}
+					<ol>
+						{%- for control in hazard_controls %}
+						<li>{{ text(control.control) }}{% if control.hierarchy_level %} <span class="hse-small">({{ text(control.hierarchy_level) }})</span>{% endif %}</li>
+						{%- endfor %}
+					</ol>
+					{%- endif %}
+				</td>
+				{%- else %}
+				<td></td><td></td><td></td>
+				{%- endif %}
+			</tr>
+			{%- endfor %}
+			{%- endfor %}
+		</tbody>
+	</table>
+
+	{#- Revision history, when there is more than the original #}
+	{%- if ctx.revisions|length > 1 %}
+	<table>
+		<thead>
+			<tr><th class="hse-sec" colspan="4">{{ _("Revision History") }}</th></tr>
+			<tr>
+				<th class="hse-col hse-no">{{ _("Revision") }}</th>
+				<th class="hse-col" style="width: 15%;">{{ _("Date") }}</th>
+				<th class="hse-col" style="width: 25%;">{{ _("Triggered By") }}</th>
+				<th class="hse-col">{{ _("What Changed and Why") }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%- for row in ctx.revisions %}
+			<tr>
+				<td class="hse-no">{{ "%02d"|format(row.revision_number) }}</td>
+				<td>{{ row.date }}</td>
+				<td>{{ text(row.trigger) if row.revision_number else _("Original issue") }}</td>
+				<td>{{ text(row.remark) }}</td>
+			</tr>
+			{%- endfor %}
+		</tbody>
+	</table>
+	{%- endif %}
+
+	{#- Signatures, read from the sign-offs of the document. Each box says the role the person acted in. #}
+	<table class="hse-sign" style="page-break-inside: avoid; margin-top: 14px;">
+		<tbody>
+			<tr>
+				{%- for sign in ctx.signatures %}
+				<td class="hse-caption">{{ sign.caption }}{% if sign.role %} ({{ sign.role|e }}){% endif %}</td>
+				{%- endfor %}
+			</tr>
+			<tr>
+				{%- for sign in ctx.signatures %}
+				<td class="hse-space"></td>
+				{%- endfor %}
+			</tr>
+			<tr>
+				{%- for sign in ctx.signatures %}
+				<td>{{ _("Name") }}: {{ text(sign.name) }}</td>
+				{%- endfor %}
+			</tr>
+			<tr>
+				{%- for sign in ctx.signatures %}
+				<td>{{ _("Designation") }}: {{ text(sign.designation) }}</td>
+				{%- endfor %}
+			</tr>
+			<tr>
+				{%- for sign in ctx.signatures %}
+				<td>{{ _("Date") }}: {{ sign.date }}</td>
+				{%- endfor %}
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div id="footer-html" class="visible-pdf">
+	<table class="hse-foot">
+		<tr>
+			<td>{{ ctx.internal_line|e }}</td>
+			<td class="hse-page">{{ _("Page {0} of {1}").format('<span class="page"></span>', '<span class="topage"></span>') }}</td>
+		</tr>
+	</table>
+</div>

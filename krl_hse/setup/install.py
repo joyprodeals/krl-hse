@@ -77,6 +77,8 @@ def ensure_setup():
 	ensure_roles()
 	ensure_link_permissions()
 	seed_masters()
+	fill_severity_colours()
+	seed_risk_matrix()
 	ensure_settings_defaults()
 	ensure_manage_permissions()
 	ensure_workflows()
@@ -161,6 +163,48 @@ def seed_masters():
 			frappe.get_doc({"doctype": doctype, **record}).insert(ignore_permissions=True)
 
 
+def fill_severity_colours():
+	"""Give a severity a starting colour, but only where KRL has not chosen one."""
+	if not frappe.db.exists("DocType", "HSE Severity Level"):
+		return
+	for severity, colour in _load("risk_matrix.json")["colours"].items():
+		if frappe.db.exists("HSE Severity Level", severity) and not frappe.db.get_value(
+			"HSE Severity Level", severity, "colour"
+		):
+			frappe.db.set_value("HSE Severity Level", severity, "colour", colour, update_modified=False)
+
+
+def seed_risk_matrix():
+	"""Fill the risk matrix from the starting thresholds, but only while it has no combinations.
+
+	The mapping is a placeholder until KRL confirms it (the Confirmed by KRL tick on HSE Risk Matrix).
+	"""
+	if not frappe.db.exists("DocType", "HSE Risk Matrix"):
+		return
+
+	matrix = frappe.get_doc("HSE Risk Matrix")
+	if matrix.cells:
+		return
+
+	thresholds = sorted(_load("risk_matrix.json")["thresholds"], key=lambda row: row["max_score"])
+	consequences = frappe.get_all("HSE Consequence Level", fields=["name", "level"], order_by="level")
+	likelihoods = frappe.get_all("HSE Likelihood Level", fields=["name", "level"], order_by="level")
+	if not (consequences and likelihoods):
+		return
+
+	for consequence in consequences:
+		for likelihood in likelihoods:
+			score = consequence.level * likelihood.level
+			severity = next((row["severity"] for row in thresholds if score <= row["max_score"]), None)
+			if severity and frappe.db.exists("HSE Severity Level", severity):
+				matrix.append(
+					"cells",
+					{"consequence": consequence.name, "likelihood": likelihood.name, "severity": severity},
+				)
+
+	matrix.save(ignore_permissions=True)
+
+
 def ensure_workflows():
 	"""Create the starting approval workflows that do not exist yet. Existing ones are left alone."""
 	for entry in _load("workflows.json")["workflows"]:
@@ -203,6 +247,7 @@ def ensure_workflows():
 						"next_state": t["next_state"],
 						"allowed": role,
 						"allow_self_approval": t.get("allow_self_approval", 1),
+						"condition": t.get("condition"),
 					}
 					for t in entry["transitions"]
 					for role in t["allowed"]

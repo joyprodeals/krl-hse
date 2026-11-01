@@ -1,0 +1,474 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "branch",
+  "method_statement",
+  "work_order",
+  "area",
+  "column_break_header",
+  "document_number",
+  "revision_number",
+  "first_issue_date",
+  "revision_date",
+  "project_section",
+  "name_of_work",
+  "client_name",
+  "column_break_project",
+  "next_review_date",
+  "review_status",
+  "highest_residual_severity",
+  "has_high_residual_risk",
+  "lines_section",
+  "lines_help",
+  "lines",
+  "controls_section",
+  "controls_help",
+  "controls",
+  "client_format_section",
+  "client_format_applies",
+  "client_format_reference",
+  "client_format_file",
+  "client_department",
+  "client_section",
+  "column_break_client",
+  "client_work",
+  "client_document_number",
+  "client_issue_date",
+  "client_revision_number",
+  "client_revision_date",
+  "revision_section",
+  "previous_revision",
+  "revision_trigger",
+  "source_document",
+  "revision_remark",
+  "approval_section",
+  "recommendations",
+  "workflow_state",
+  "sign_offs"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "method_statement",
+   "fieldtype": "Link",
+   "label": "Method Statement",
+   "options": "HSE Method Statement",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "no_copy": 0,
+   "description": "The Method Statement this assessment is for. What is accepted is set in HSE Settings."
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Work",
+   "options": "HSE Work Order",
+   "in_standard_filter": 1,
+   "description": "Filled from the Method Statement"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Link",
+   "label": "Area",
+   "options": "HSE Workplace Area",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "document_number",
+   "fieldtype": "Data",
+   "label": "Document Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "revision_number",
+   "fieldtype": "Int",
+   "label": "Revision Number",
+   "read_only": 1,
+   "no_copy": 1,
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "first_issue_date",
+   "fieldtype": "Date",
+   "label": "First Issue Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "revision_date",
+   "fieldtype": "Date",
+   "label": "Revision Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "project_section",
+   "fieldtype": "Section Break",
+   "label": "Work Details"
+  },
+  {
+   "fieldname": "name_of_work",
+   "fieldtype": "Data",
+   "label": "Name of Work",
+   "reqd": 1
+  },
+  {
+   "fieldname": "client_name",
+   "fieldtype": "Data",
+   "label": "Name of Client"
+  },
+  {
+   "fieldname": "column_break_project",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "next_review_date",
+   "fieldtype": "Date",
+   "label": "Next Review Due",
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Set when the HIRA is approved. A reminder is raised before this date."
+  },
+  {
+   "fieldname": "highest_residual_severity",
+   "fieldtype": "Link",
+   "label": "Highest Risk After Controls",
+   "options": "HSE Severity Level",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "has_high_residual_risk",
+   "fieldtype": "Check",
+   "label": "Work-Stopping Risk Remains",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "lines_section",
+   "fieldtype": "Section Break",
+   "label": "Risk Assessment"
+  },
+  {
+   "fieldname": "lines_help",
+   "fieldtype": "HTML",
+   "label": "Lines Help",
+   "options": "<p class=\"text-muted\">One line for each hazard of each activity. For an activity with several hazards, or a hazard that affects people and assets, add a line for each. The risk severity is worked out from the risk matrix when the consequence and likelihood are chosen.</p>"
+  },
+  {
+   "fieldname": "lines",
+   "fieldtype": "Table",
+   "label": "Lines",
+   "options": "HSE HIRA Line"
+  },
+  {
+   "fieldname": "controls_section",
+   "fieldtype": "Section Break",
+   "label": "Control Measures"
+  },
+  {
+   "fieldname": "controls_help",
+   "fieldtype": "HTML",
+   "label": "Controls Help",
+   "options": "<p class=\"text-muted\">List the existing and the additional control measures against the line they are for, with the level of the hierarchy of control. A risk that stops work needs at least one control measure before the HIRA can be sent for review.</p>"
+  },
+  {
+   "fieldname": "controls",
+   "fieldtype": "Table",
+   "label": "Control Measures",
+   "options": "HSE HIRA Control"
+  },
+  {
+   "fieldname": "client_format_section",
+   "fieldtype": "Section Break",
+   "label": "Client Format"
+  },
+  {
+   "fieldname": "client_format_applies",
+   "fieldtype": "Check",
+   "label": "The Client Has Instructed Its Own Format",
+   "description": "The client's document governs. The KRL details above are still recorded for the register."
+  },
+  {
+   "fieldname": "client_format_reference",
+   "fieldtype": "Data",
+   "label": "Client Reference Format Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_format_file",
+   "fieldtype": "Attach",
+   "label": "Client Format (Governing Document)",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_department",
+   "fieldtype": "Data",
+   "label": "Client Department",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_section",
+   "fieldtype": "Data",
+   "label": "Client Section",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "column_break_client",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "client_work",
+   "fieldtype": "Data",
+   "label": "Client Work",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_document_number",
+   "fieldtype": "Data",
+   "label": "Client Document Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_issue_date",
+   "fieldtype": "Date",
+   "label": "Client Issue or Effective Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_number",
+   "fieldtype": "Data",
+   "label": "Client Revision Number",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "client_revision_date",
+   "fieldtype": "Date",
+   "label": "Client Revision Date",
+   "depends_on": "eval:doc.client_format_applies"
+  },
+  {
+   "fieldname": "revision_section",
+   "fieldtype": "Section Break",
+   "label": "Revision",
+   "depends_on": "eval:doc.revision_number > 0"
+  },
+  {
+   "fieldname": "previous_revision",
+   "fieldtype": "Link",
+   "label": "Revises",
+   "options": "HSE HIRA",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "revision_trigger",
+   "fieldtype": "Link",
+   "label": "What Triggered This Revision",
+   "options": "HSE Revision Trigger",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "source_document",
+   "fieldtype": "Data",
+   "label": "Source Document",
+   "no_copy": 1,
+   "description": "For example the CAPA number or the client letter"
+  },
+  {
+   "fieldname": "revision_remark",
+   "fieldtype": "Small Text",
+   "label": "What Changed and Why",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Small Text",
+   "label": "Approver's Recommendations",
+   "no_copy": 1,
+   "description": "Required when the approver sends the document back"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Approval Status",
+   "options": "Workflow State",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "sign_offs",
+   "fieldtype": "Table",
+   "label": "Sign-offs",
+   "options": "HSE Sign Off",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "label": "Review Status",
+   "options": "\nCurrent\nReview Due\nOverdue",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-01 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE HIRA",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HO HSE Team",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Branch HSE Head",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "report": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "HSE Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "report": 1,
+   "print": 1
+  },
+  {
+   "role": "Branch Head",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "report": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Director",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "HSE Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Branch Department Head",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Store In-charge",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "Employee",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "name_of_work",
+ "show_title_field_in_link": 1,
+ "search_fields": "document_number,name_of_work,client_name",
+ "track_changes": 1,
+ "allow_import": 0
+}

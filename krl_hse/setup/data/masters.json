@@ -1,97 +1,457 @@
 {
  "_comment": "Starting master records, from BRD V1.0 and KRL's paper formats. Each list is loaded only when its master is empty, so after that KRL owns it and nothing is brought back.",
  "HSE Severity Level": [
-  {"severity_label": "Severity I", "level": 1, "harm": "Very Low", "rectify_within_days": 3, "rectify_immediately": 0,
+  {
+   "severity_label": "Severity I",
+   "level": 1,
+   "harm": "Very Low",
+   "rectify_within_days": 3,
+   "rectify_immediately": 0,
    "definition": "Untidy or non-standard",
    "action_required": "Bear the risk as it is, with continuous monitoring (opportunity for improvement)",
    "rectification_condition": "If more time is needed it must be informed with genuine reasons",
-   "requires_capa": 0, "requires_investigation": 0, "stops_work": 0, "share_with_all_branches": 0},
-  {"severity_label": "Severity II", "level": 2, "harm": "Low", "rectify_within_days": 3, "rectify_immediately": 0,
+   "requires_capa": 0,
+   "requires_investigation": 0,
+   "stops_work": 0,
+   "share_with_all_branches": 0
+  },
+  {
+   "severity_label": "Severity II",
+   "level": 2,
+   "harm": "Low",
+   "rectify_within_days": 3,
+   "rectify_immediately": 0,
    "definition": "Untidy and restricts access",
    "action_required": "Control risk: bear the risk with control measures in place",
    "rectification_condition": "If more time is needed it must be informed with genuine reasons",
-   "requires_capa": 0, "requires_investigation": 0, "stops_work": 0, "share_with_all_branches": 0},
-  {"severity_label": "Severity III", "level": 3, "harm": "Moderate", "rectify_within_days": 2, "rectify_immediately": 0,
+   "requires_capa": 0,
+   "requires_investigation": 0,
+   "stops_work": 0,
+   "share_with_all_branches": 0
+  },
+  {
+   "severity_label": "Severity III",
+   "level": 3,
+   "harm": "Moderate",
+   "rectify_within_days": 2,
+   "rectify_immediately": 0,
    "definition": "Violation which may cause injury: rules, procedure or PPE",
    "action_required": "Reduce risk: undesirable, reduce to low or very low",
    "rectification_condition": "If more time is needed it must be informed with genuine reasons; CAPA is mandatory",
-   "requires_capa": 1, "requires_investigation": 1, "stops_work": 0, "share_with_all_branches": 0},
-  {"severity_label": "Severity IV", "level": 4, "harm": "High", "rectify_within_days": 0, "rectify_immediately": 1,
+   "requires_capa": 1,
+   "requires_investigation": 1,
+   "stops_work": 0,
+   "share_with_all_branches": 0
+  },
+  {
+   "severity_label": "Severity IV",
+   "level": 4,
+   "harm": "High",
+   "rectify_within_days": 0,
+   "rectify_immediately": 1,
    "definition": "Unsafe act or conditions, serious injury potential, stop work",
    "action_required": "Stop the activity, reduce risk to low or very low, then restart the activity",
    "rectification_condition": "Work is stopped until rectification is done; CAPA is mandatory",
-   "requires_capa": 1, "requires_investigation": 1, "stops_work": 1, "share_with_all_branches": 1},
-  {"severity_label": "Severity V", "level": 5, "harm": "Critical", "rectify_within_days": 0, "rectify_immediately": 1,
+   "requires_capa": 1,
+   "requires_investigation": 1,
+   "stops_work": 1,
+   "share_with_all_branches": 1
+  },
+  {
+   "severity_label": "Severity V",
+   "level": 5,
+   "harm": "Critical",
+   "rectify_within_days": 0,
+   "rectify_immediately": 1,
    "definition": "DANGER: immediate injury potential, stop work",
    "action_required": "Stop all work, reduce risk to low or very low, then restart all work",
    "rectification_condition": "Work is stopped until rectification is done; CAPA is mandatory",
-   "requires_capa": 1, "requires_investigation": 1, "stops_work": 1, "share_with_all_branches": 1}
+   "requires_capa": 1,
+   "requires_investigation": 1,
+   "stops_work": 1,
+   "share_with_all_branches": 1
+  }
  ],
  "HSE Worker Category": [
-  {"category_name": "EL", "description": "As used on the KRL Work Place Area Division form"},
-  {"category_name": "SL", "description": "As used on the KRL Work Place Area Division form"},
-  {"category_name": "Worker", "description": "As used on the KRL Work Place Area Division form"}
+  {
+   "category_name": "EL",
+   "description": "As used on the KRL Work Place Area Division form"
+  },
+  {
+   "category_name": "SL",
+   "description": "As used on the KRL Work Place Area Division form"
+  },
+  {
+   "category_name": "Worker",
+   "description": "As used on the KRL Work Place Area Division form"
+  }
  ],
  "HSE Area Team Role": [
-  {"role_name": "Team Lead", "is_leader": 1},
-  {"role_name": "Member 1", "is_leader": 0},
-  {"role_name": "Member 2", "is_leader": 0}
+  {
+   "role_name": "Team Lead",
+   "is_leader": 1
+  },
+  {
+   "role_name": "Member 1",
+   "is_leader": 0
+  },
+  {
+   "role_name": "Member 2",
+   "is_leader": 0
+  }
  ],
  "HSE Contact Role": [
-  {"role_name": "Branch Head", "party": "KRL"},
-  {"role_name": "Operations Head", "party": "KRL"},
-  {"role_name": "HSE Head", "party": "KRL"},
-  {"role_name": "HR Head", "party": "KRL"},
-  {"role_name": "Maintenance Head", "party": "KRL"},
-  {"role_name": "Accounts Head", "party": "KRL"},
-  {"role_name": "Project Head", "party": "KRL"},
-  {"role_name": "Client Representative", "party": "Client"},
-  {"role_name": "Client HSE Representative", "party": "Client"},
-  {"role_name": "Client HR Representative", "party": "Client"}
+  {
+   "role_name": "Branch Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "Operations Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "HSE Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "HR Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "Maintenance Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "Accounts Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "Project Head",
+   "party": "KRL"
+  },
+  {
+   "role_name": "Client Representative",
+   "party": "Client"
+  },
+  {
+   "role_name": "Client HSE Representative",
+   "party": "Client"
+  },
+  {
+   "role_name": "Client HR Representative",
+   "party": "Client"
+  }
  ],
  "HSE Revision Trigger": [
-  {"trigger_name": "CAPA Finding", "description": "A corrective or preventive action asks for the change"},
-  {"trigger_name": "Audit Recommendation", "description": "An internal, third-party or regulatory audit recommends the change"},
-  {"trigger_name": "Job Cycle Check Finding", "description": "A job cycle check found a gap against the document"},
-  {"trigger_name": "Client Requirement", "description": "The client has asked for the change"},
-  {"trigger_name": "Management of Change", "description": "A change in work, method, equipment or people"},
-  {"trigger_name": "Other", "description": "Give the reason under What Changed and Why"}
+  {
+   "trigger_name": "CAPA Finding",
+   "description": "A corrective or preventive action asks for the change"
+  },
+  {
+   "trigger_name": "Audit Recommendation",
+   "description": "An internal, third-party or regulatory audit recommends the change"
+  },
+  {
+   "trigger_name": "Job Cycle Check Finding",
+   "description": "A job cycle check found a gap against the document"
+  },
+  {
+   "trigger_name": "Client Requirement",
+   "description": "The client has asked for the change"
+  },
+  {
+   "trigger_name": "Management of Change",
+   "description": "A change in work, method, equipment or people"
+  },
+  {
+   "trigger_name": "Scheduled Review",
+   "description": "The review date came round. The document is checked and approved again, with or without a change"
+  },
+  {
+   "trigger_name": "Other",
+   "description": "Give the reason under What Changed and Why"
+  }
  ],
  "HSE Common Work": [
-  {"work_name": "General", "description": "Common equipment for the whole project, for example a bus or tanker"},
-  {"work_name": "Administration", "description": "Common manpower such as accounts, store and management"},
-  {"work_name": "Maint-Fleet", "description": "Maintenance of the fleet"},
-  {"work_name": "Maint-Plant", "description": "Maintenance of the plant"}
+  {
+   "work_name": "General",
+   "description": "Common equipment for the whole project, for example a bus or tanker"
+  },
+  {
+   "work_name": "Administration",
+   "description": "Common manpower such as accounts, store and management"
+  },
+  {
+   "work_name": "Maint-Fleet",
+   "description": "Maintenance of the fleet"
+  },
+  {
+   "work_name": "Maint-Plant",
+   "description": "Maintenance of the plant"
+  }
  ],
  "HSE PPE Item": [
-  {"ppe_name": "Helmet", "is_basic": 1, "sort_order": 1},
-  {"ppe_name": "Shoe", "is_basic": 1, "sort_order": 2},
-  {"ppe_name": "Goggles", "is_basic": 1, "sort_order": 3},
-  {"ppe_name": "FR Jacket (Hot Zone)", "is_basic": 1, "sort_order": 4},
-  {"ppe_name": "Fluorescent Jacket (Non-Hot Zone)", "is_basic": 1, "sort_order": 5},
-  {"ppe_name": "Nose Mask", "is_basic": 1, "sort_order": 6}
+  {
+   "ppe_name": "Helmet",
+   "is_basic": 1,
+   "sort_order": 1
+  },
+  {
+   "ppe_name": "Shoe",
+   "is_basic": 1,
+   "sort_order": 2
+  },
+  {
+   "ppe_name": "Goggles",
+   "is_basic": 1,
+   "sort_order": 3
+  },
+  {
+   "ppe_name": "FR Jacket (Hot Zone)",
+   "is_basic": 1,
+   "sort_order": 4
+  },
+  {
+   "ppe_name": "Fluorescent Jacket (Non-Hot Zone)",
+   "is_basic": 1,
+   "sort_order": 5
+  },
+  {
+   "ppe_name": "Nose Mask",
+   "is_basic": 1,
+   "sort_order": 6
+  }
  ],
  "HSE Emergency Type": [
-  {"type_name": "Fire", "occurs": "At the Workplace"},
-  {"type_name": "Material Handling", "occurs": "At the Workplace"},
-  {"type_name": "Moving Plant and Equipment", "occurs": "At the Workplace"},
-  {"type_name": "Confined Space Rescue", "occurs": "At the Workplace"},
-  {"type_name": "Fall from Height", "occurs": "At the Workplace"},
-  {"type_name": "Medical", "occurs": "At the Workplace"},
-  {"type_name": "Road Accident", "occurs": "At the Workplace"},
-  {"type_name": "Excavation", "occurs": "At the Workplace"},
-  {"type_name": "Toxic Gas Leakage", "occurs": "Within the Vicinity"},
-  {"type_name": "Strike or Riots", "occurs": "Within the Vicinity"},
-  {"type_name": "Fire in the Vicinity", "occurs": "Within the Vicinity"},
-  {"type_name": "Accident in the Vicinity", "occurs": "Within the Vicinity"},
-  {"type_name": "Flood", "occurs": "Natural"},
-  {"type_name": "Thunderstorm", "occurs": "Natural"}
+  {
+   "type_name": "Fire",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Material Handling",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Moving Plant and Equipment",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Confined Space Rescue",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Fall from Height",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Medical",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Road Accident",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Excavation",
+   "occurs": "At the Workplace"
+  },
+  {
+   "type_name": "Toxic Gas Leakage",
+   "occurs": "Within the Vicinity"
+  },
+  {
+   "type_name": "Strike or Riots",
+   "occurs": "Within the Vicinity"
+  },
+  {
+   "type_name": "Fire in the Vicinity",
+   "occurs": "Within the Vicinity"
+  },
+  {
+   "type_name": "Accident in the Vicinity",
+   "occurs": "Within the Vicinity"
+  },
+  {
+   "type_name": "Flood",
+   "occurs": "Natural"
+  },
+  {
+   "type_name": "Thunderstorm",
+   "occurs": "Natural"
+  }
  ],
  "HSE Emergency Contact Type": [
-  {"type_name": "Fire Department", "sort_order": 1},
-  {"type_name": "Safety Department", "sort_order": 2},
-  {"type_name": "Security Department", "sort_order": 3},
-  {"type_name": "Ambulance / Hospital", "sort_order": 4},
-  {"type_name": "Police Station", "sort_order": 5}
+  {
+   "type_name": "Fire Department",
+   "sort_order": 1
+  },
+  {
+   "type_name": "Safety Department",
+   "sort_order": 2
+  },
+  {
+   "type_name": "Security Department",
+   "sort_order": 3
+  },
+  {
+   "type_name": "Ambulance / Hospital",
+   "sort_order": 4
+  },
+  {
+   "type_name": "Police Station",
+   "sort_order": 5
+  }
+ ],
+ "HSE Hazard Category": [
+  {
+   "category_name": "Physical"
+  },
+  {
+   "category_name": "Chemical"
+  },
+  {
+   "category_name": "Biological"
+  },
+  {
+   "category_name": "Ergonomic"
+  },
+  {
+   "category_name": "Psychosocial"
+  }
+ ],
+ "HSE Impact Area": [
+  {
+   "area_name": "People"
+  },
+  {
+   "area_name": "Asset"
+  },
+  {
+   "area_name": "Environment"
+  },
+  {
+   "area_name": "Community"
+  }
+ ],
+ "HSE Activity Category": [
+  {
+   "category_name": "Services",
+   "sort_order": 1
+  },
+  {
+   "category_name": "Infrastructure",
+   "sort_order": 2
+  },
+  {
+   "category_name": "Equipment",
+   "sort_order": 3
+  },
+  {
+   "category_name": "Materials",
+   "sort_order": 4
+  },
+  {
+   "category_name": "Substances",
+   "sort_order": 5
+  },
+  {
+   "category_name": "Physical Conditions",
+   "sort_order": 6
+  },
+  {
+   "category_name": "Human Factors",
+   "sort_order": 7
+  },
+  {
+   "category_name": "Social Factors",
+   "sort_order": 8
+  }
+ ],
+ "HSE Hierarchy of Control": [
+  {
+   "control_level": "Elimination",
+   "control_order": 1,
+   "is_ppe": 0,
+   "description": "Remove the hazard completely"
+  },
+  {
+   "control_level": "Substitution",
+   "control_order": 2,
+   "is_ppe": 0,
+   "description": "Replace the hazard with a less hazardous one"
+  },
+  {
+   "control_level": "Isolation",
+   "control_order": 3,
+   "is_ppe": 0,
+   "description": "Keep people away from the hazard"
+  },
+  {
+   "control_level": "Engineering Control",
+   "control_order": 4,
+   "is_ppe": 0,
+   "description": "Reduce the hazard with equipment or design"
+  },
+  {
+   "control_level": "Administrative Control",
+   "control_order": 5,
+   "is_ppe": 0,
+   "description": "Change the way people work: procedures, training, signs, permits"
+  },
+  {
+   "control_level": "PPE",
+   "control_order": 6,
+   "is_ppe": 1,
+   "description": "Protect the person with personal protective equipment"
+  }
+ ],
+ "HSE Likelihood Level": [
+  {
+   "likelihood_label": "Rare",
+   "level": 1,
+   "definition": "Never occurred earlier in the workplace"
+  },
+  {
+   "likelihood_label": "Unlikely",
+   "level": 2,
+   "definition": "Occurred in another similar workplace"
+  },
+  {
+   "likelihood_label": "Possible",
+   "level": 3,
+   "definition": "Occurred near the workplace"
+  },
+  {
+   "likelihood_label": "Very Likely",
+   "level": 4,
+   "definition": "Occurred at least once in the workplace"
+  },
+  {
+   "likelihood_label": "Certain",
+   "level": 5,
+   "definition": "Occurred frequently in the workplace"
+  }
+ ],
+ "HSE Consequence Level": [
+  {
+   "consequence_label": "C1 Insignificant",
+   "level": 1
+  },
+  {
+   "consequence_label": "C2 Minor",
+   "level": 2
+  },
+  {
+   "consequence_label": "C3 Moderate",
+   "level": 3
+  },
+  {
+   "consequence_label": "C4 Major",
+   "level": 4
+  },
+  {
+   "consequence_label": "C5 Catastrophic",
+   "level": 5
+  }
  ]
 }

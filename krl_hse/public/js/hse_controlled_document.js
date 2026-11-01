@@ -33,6 +33,25 @@ function show_revision_state(frm, status) {
 		);
 	}
 
+	if (status.is_latest && ["Review Due", "Overdue"].includes(status.review_status)) {
+		const date = frappe.datetime.str_to_user(status.review_date);
+		frm.set_intro(
+			status.review_status === "Overdue"
+				? __(
+						"The review date {0} has passed. To renew this document, start a revision (trigger: Scheduled Review) and approve it again.",
+						[date]
+				  )
+				: __(
+						"This document is due for review by {0}. To renew it, start a revision (trigger: Scheduled Review) and approve it again.",
+						[date]
+				  ),
+			status.review_status === "Overdue" ? "red" : "orange"
+		);
+	}
+
+	// A warning from the document type itself, for example that the SOP behind a JHA has been replaced.
+	if (status.notice) frm.set_intro(frappe.utils.escape_html(status.notice), "orange");
+
 	frm.add_custom_button(
 		__("All Revisions"),
 		() => frappe.set_route("List", frm.doctype, { document_number: status.document_number }),

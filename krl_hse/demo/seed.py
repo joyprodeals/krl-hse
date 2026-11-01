@@ -187,7 +187,280 @@ METHOD_STATEMENTS = [
 	},
 ]
 
+# One Draft HIRA for the approved Method Statement of each sample work. A line is
+# (job, routine, activity category, activity, hazard category, hazard, hazardous event, cause,
+#  consequence, impact area, existing safeguard, recommendation, ratings). The ratings are the
+# consequence and likelihood before the controls, then after them.
+HIRAS = [
+	{
+		"job_code": "TEST-ATH",
+		"area": "TEST Loading Yard",
+		"lines": [
+			(
+				"TEST Loading",
+				"Routine",
+				"Equipment",
+				"TEST: the wheel loader moves in the yard",
+				"Physical",
+				"TEST: moving vehicle close to people",
+				"TEST: the loader hits a person",
+				"TEST: poor visibility, nobody guiding the loader",
+				"TEST: serious injury or death",
+				"People",
+				"TEST: reverse alarm and horn",
+				"TEST: appoint a banksman for every reversing move",
+				("C4 Major", "Possible", "C4 Major", "Rare"),
+			),
+			(
+				"TEST Loading",
+				"Routine",
+				"Physical Conditions",
+				"TEST: walking in the yard during loading",
+				"Physical",
+				"TEST: uneven ground and loose material",
+				"TEST: a person slips or trips",
+				"TEST: poor housekeeping",
+				"TEST: sprain or fracture",
+				"People",
+				"TEST: marked walkways",
+				"",
+				("C2 Minor", "Possible", "C1 Insignificant", "Rare"),
+			),
+			(
+				"TEST Workshop servicing",
+				"Non-Routine",
+				"Substances",
+				"TEST: draining oil during servicing",
+				"Chemical",
+				"TEST: used oil",
+				"TEST: oil spills on the floor and reaches the drain",
+				"TEST: no drip tray",
+				"TEST: soil and water contamination",
+				"Environment",
+				"TEST: absorbent material kept in the workshop",
+				"TEST: provide drip trays at every service bay",
+				("C2 Minor", "Unlikely", "C1 Insignificant", "Unlikely"),
+			),
+		],
+		"controls": [
+			(1, "Existing", "TEST: reverse alarm and horn on every loader", "Engineering Control"),
+			(1, "Existing", "TEST: loader operators trained and authorised", "Administrative Control"),
+			(2, "Existing", "TEST: walkways marked with paint and signs", "Administrative Control"),
+		],
+	},
+	{
+		"job_code": "TEST-SLAG",
+		"area": "TEST Slag Pit",
+		"lines": [
+			(
+				"TEST Slag handling",
+				"Routine",
+				"Materials",
+				"TEST: loading hot slag into the dumper",
+				"Physical",
+				"TEST: hot metal and heat",
+				"TEST: splash of hot slag on a worker",
+				"TEST: slag not cooled, people too close",
+				"TEST: severe burns",
+				"People",
+				"TEST: barricade around the pit",
+				"TEST: allow loading only after the cooling time is over",
+				("C5 Catastrophic", "Possible", "C4 Major", "Rare"),
+			),
+			(
+				"TEST Slag handling",
+				"Routine",
+				"Physical Conditions",
+				"TEST: working at the pit side",
+				"Biological",
+				"TEST: dust and fumes",
+				"TEST: breathing in dust",
+				"TEST: no dust suppression",
+				"TEST: lung irritation",
+				"People",
+				"",
+				"TEST: water sprinkling during loading",
+				("C2 Minor", "Very Likely", "C1 Insignificant", "Unlikely"),
+			),
+		],
+		"controls": [
+			(1, "Existing", "TEST: barricade and warning signs around the pit", "Isolation"),
+			(1, "Existing", "TEST: heat-resistant suit and face shield", "PPE"),
+			(2, "Existing", "TEST: dust mask issued to every worker", "PPE"),
+		],
+	},
+]
+
+# One Draft SOP for the approved Method Statement of each sample work. A hazard is (hazard, mitigation,
+# HIRA line), the line being filled only when the work has a HIRA. A step is (activity, requirements,
+# hazard and impact, who, how, remarks). The distribution is (recipient, user key, copies).
+SOPS = [
+	{
+		"job_code": "TEST-SLAG",
+		"title": "TEST Hot slag loading",
+		"work": "TEST Slag handling",
+		"area": "TEST Slag Pit",
+		"purpose": "TEST: load hot slag into the dumper without injury or fire.",
+		"scope": "TEST: all slag loading at the slag pit.",
+		"applicable_to": "TEST: slag pit crew, supervisors and dumper drivers",
+		"definitions": "TEST: hot slag is slag that has not finished its cooling time.",
+		"annexure": "TEST: cooling-time chart and pit layout drawing",
+		"hazards": [
+			("TEST: splash of hot slag on a worker", "TEST: load only after the cooling time is over", "L1"),
+			(
+				"TEST: splash of hot slag on a worker",
+				"TEST: heat-resistant suit and face shield for everyone at the pit",
+				"L1",
+			),
+			("TEST: breathing in dust", "TEST: water sprinkling during loading", "L2"),
+		],
+		"rules": [
+			("Do", "TEST: confirm the cooling time with the shift in-charge before loading"),
+			("Do", "TEST: stay behind the barricade until the excavator stops"),
+			("Don't", "TEST: do not stand under the excavator bucket"),
+			("Don't", "TEST: do not load into a damaged dumper"),
+		],
+		"steps": [
+			(
+				"TEST: clear the pit side and place barricades",
+				"TEST: barricades and signs available",
+				"TEST: people too close to the pit",
+				"TEST Supervisor",
+				"TEST: barricade the pit side, post a banksman",
+				"",
+			),
+			(
+				"TEST: check the cooling time",
+				"TEST: cooling-time chart",
+				"TEST: splash of hot slag",
+				"TEST Supervisor",
+				"TEST: read the chart, record the time in the log",
+				"TEST: Annexure 1",
+			),
+			(
+				"TEST: load the slag into the dumper",
+				"TEST: dumper inspected",
+				"TEST: spill, dust, fire",
+				"TEST Excavator operator",
+				"TEST: load in layers, sprinkle water, keep the bucket low",
+				"",
+			),
+		],
+		"distribution": [("TEST Stores", "store_t", 1), ("TEST Site Supervisor", "site_sup_t", 2)],
+	},
+	{
+		"job_code": "TEST-ATH",
+		"title": "TEST Wheel loader operation in the yard",
+		"work": "TEST Loading",
+		"area": "TEST Loading Yard",
+		"purpose": "TEST: move the wheel loader in the yard without hitting people or equipment.",
+		"scope": "TEST: every loader movement in the loading yard.",
+		"applicable_to": "TEST: loader operators, banksmen and yard supervisors",
+		"definitions": "TEST: banksman is the person who guides the loader when it reverses.",
+		"annexure": "",
+		"hazards": [
+			("TEST: moving vehicle close to people", "TEST: a banksman for every reversing move", "L1"),
+			("TEST: moving vehicle close to people", "TEST: reverse alarm and horn working", "L1"),
+		],
+		"rules": [
+			("Do", "TEST: walk around the loader before starting"),
+			("Don't", "TEST: do not carry a passenger on the loader"),
+		],
+		"steps": [
+			(
+				"TEST: inspect the loader before the shift",
+				"TEST: checklist",
+				"TEST: defective brakes or alarm",
+				"TEST Loader operator",
+				"TEST: complete the checklist, report defects",
+				"",
+			),
+			(
+				"TEST: reverse with a banksman",
+				"TEST: trained banksman",
+				"TEST: the loader hits a person",
+				"TEST Banksman",
+				"TEST: eye contact, agreed hand signals",
+				"",
+			),
+		],
+		"distribution": [("TEST Yard Supervisor", "site_sup_t", 1)],
+	},
+]
+
 DESIGNATIONS = ["TEST Loader Operator", "TEST Fitter", "TEST Store Keeper"]
+
+
+# One JHA for each sample SOP, made once that SOP has been approved. Each hazard names the step of the SOP
+# it belongs to (1 is the first step), and each control measure its level of the hierarchy of control.
+JHAS = [
+	{
+		"sop_title": "TEST Hot slag loading",
+		"team": [("TEST Supervisor", "Supervisor"), ("TEST HSE Officer", "HSE Officer")],
+		"consulted": [("TEST Excavator operator", "Operator"), ("TEST Dumper driver", "Driver")],
+		"resources": [("TEST: excavator", 1), ("TEST: dumper", 2), ("TEST: barricades", 6)],
+		"training": [
+			("TEST: hot slag handling", "pit crew"),
+			("TEST: signals for excavator work", "banksmen"),
+		],
+		"hazards": [
+			(
+				1,
+				"TEST: people too close to the pit side",
+				"TEST: burns or being struck by the excavator",
+				[
+					("TEST: barricade the pit side and post a banksman", "Isolation"),
+					("TEST: only authorised people inside the barricade", "Administrative Control"),
+				],
+			),
+			(
+				2,
+				"TEST: loading before the slag has cooled",
+				"TEST: splash of hot slag, burns",
+				[("TEST: confirm the cooling time with the shift in-charge", "Administrative Control")],
+			),
+			(
+				3,
+				"TEST: splash of hot slag on a worker",
+				"TEST: serious burns",
+				[
+					("TEST: workers stay behind the barricade", "Isolation"),
+					("TEST: heat-resistant suit and face shield", "PPE"),
+				],
+			),
+			(
+				3,
+				"TEST: dust while loading",
+				"TEST: breathing problems",
+				[("TEST: water sprinkling during loading", "Engineering Control")],
+			),
+		],
+	},
+	{
+		"sop_title": "TEST Wheel loader operation in the yard",
+		"team": [("TEST Yard Supervisor", "Supervisor"), ("TEST HSE Officer", "HSE Officer")],
+		"consulted": [("TEST Loader operator", "Operator")],
+		"resources": [("TEST: wheel loader", 1), ("TEST: reverse alarm", 1)],
+		"training": [("TEST: banksman signals", "banksmen")],
+		"hazards": [
+			(
+				1,
+				"TEST: defective brakes or alarm",
+				"TEST: the loader cannot stop or warn people",
+				[("TEST: complete the pre-shift checklist, report defects", "Administrative Control")],
+			),
+			(
+				2,
+				"TEST: moving vehicle close to people",
+				"TEST: a person is hit by the loader",
+				[
+					("TEST: a banksman guides every reversing move", "Administrative Control"),
+					("TEST: reverse alarm and horn working", "Engineering Control"),
+				],
+			),
+		],
+	},
+]
 
 
 def email_for(key):
@@ -210,6 +483,9 @@ def load(password=None, branches=None, head_office=None):
 	_ensure_work_orders(sites)
 	_ensure_areas(sites)
 	_ensure_method_statements(sites)
+	_ensure_hiras(sites)
+	_ensure_sops(sites)
+	_ensure_jhas(sites)
 	frappe.db.commit()
 	print(f"Demo data loaded for branches {', '.join(f'{c} ({n})' for c, n in sorted(sites.items()))}.")
 	print(f"Test logins end with @{DOMAIN}.")
@@ -402,6 +678,225 @@ def _ensure_method_statements(sites):
 		).insert(ignore_permissions=True)
 
 
+def _ensure_hiras(sites):
+	"""A Draft HIRA for each sample work whose Method Statement has been approved.
+
+	The Method Statements are left in Draft so the approval can be walked through. A HIRA needs an
+	approved one, so until it is approved the HIRA is skipped, and made the next time this runs.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	for values in HIRAS:
+		work_order = frappe.db.get_value("HSE Work Order", {"job_code": values["job_code"]}, "name")
+		if not work_order:
+			print(f"Skipping HIRA for {values['job_code']}: the work order is not on this site.")
+			continue
+
+		ms = frappe.db.get_value(
+			"HSE Method Statement",
+			{"work_order": work_order, "workflow_state": get_approved_state()},
+			["name", "branch"],
+			as_dict=True,
+		)
+		if not ms:
+			print(
+				f"Skipping HIRA for {values['job_code']}: its Method Statement is not approved yet. "
+				"Approve it, then run the load again."
+			)
+			continue
+		if frappe.db.exists("HSE HIRA", {"method_statement": ms.name}):
+			continue
+
+		area = frappe.db.get_value("HSE Workplace Area", {"branch": ms.branch, "area_name": values["area"]})
+		lines = [
+			{
+				"job": job,
+				"routine": routine,
+				"activity_category": category,
+				"activity": activity,
+				"hazard_category": hazard_category,
+				"hazard": hazard,
+				"hazardous_event": event,
+				"cause": cause,
+				"consequence_impact": consequence_text,
+				"impact_area": impact,
+				"existing_safeguard": safeguard,
+				"recommendation": recommendation,
+				"consequence": ratings[0],
+				"likelihood": ratings[1],
+				"residual_consequence": ratings[2],
+				"residual_likelihood": ratings[3],
+			}
+			for (
+				job,
+				routine,
+				category,
+				activity,
+				hazard_category,
+				hazard,
+				event,
+				cause,
+				consequence_text,
+				impact,
+				safeguard,
+				recommendation,
+				ratings,
+			) in values["lines"]
+		]
+		frappe.get_doc(
+			{
+				"doctype": "HSE HIRA",
+				"branch": ms.branch,
+				"method_statement": ms.name,
+				"area": area,
+				"lines": lines,
+				"controls": [
+					{"line_ref": f"L{n}", "measure_type": kind, "control": text, "hierarchy_level": level}
+					for n, kind, text, level in values["controls"]
+				],
+			}
+		).insert(ignore_permissions=True)
+
+
+def _ensure_sops(sites):
+	"""A Draft SOP for each sample work whose Method Statement has been approved.
+
+	Like the HIRA, a SOP needs an approved Method Statement, so it is made the next time this runs
+	after the Method Statement has been approved. Its hazards point to the HIRA of the same work when
+	one exists.
+	"""
+	from frappe.utils import add_months, nowdate
+
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	for values in SOPS:
+		work_order = frappe.db.get_value("HSE Work Order", {"job_code": values["job_code"]}, "name")
+		if not work_order:
+			print(f"Skipping SOP for {values['job_code']}: the work order is not on this site.")
+			continue
+
+		# The approved Method Statement of this job that has the sample work among its works.
+		with_work = frappe.get_all(
+			"HSE MS Work",
+			filters={"parenttype": "HSE Method Statement", "work_name": values["work"]},
+			pluck="parent",
+		)
+		candidates = (
+			frappe.get_all(
+				"HSE Method Statement",
+				filters={
+					"name": ("in", with_work),
+					"work_order": work_order,
+					"workflow_state": get_approved_state(),
+				},
+				fields=["name", "branch"],
+				order_by="creation asc",
+			)
+			if with_work
+			else []
+		)
+		# Prefer the one that has a HIRA, so the hazards can point to its lines.
+		ms = next((c for c in candidates if frappe.db.exists("HSE HIRA", {"method_statement": c.name})), None)
+		ms = ms or (candidates[0] if candidates else None)
+		if not ms:
+			print(
+				f"Skipping SOP for {values['job_code']}: no approved Method Statement has the work {values['work']}. "
+				"Approve one, then run the load again."
+			)
+			continue
+		if frappe.db.exists("HSE SOP", {"branch": ms.branch, "sop_title": values["title"]}):
+			continue
+
+		hira = frappe.db.get_value("HSE HIRA", {"method_statement": ms.name})
+		area = frappe.db.get_value("HSE Workplace Area", {"branch": ms.branch, "area_name": values["area"]})
+		frappe.get_doc(
+			{
+				"doctype": "HSE SOP",
+				"branch": ms.branch,
+				"method_statement": ms.name,
+				"sop_title": values["title"],
+				"area": area,
+				"purpose": values["purpose"],
+				"scope": values["scope"],
+				"applicable_to": values["applicable_to"],
+				"definitions": values["definitions"],
+				"annexure": values["annexure"],
+				"validity_date": add_months(nowdate(), 12),
+				"works": [{"work": values["work"]}],
+				"hazards": [
+					{
+						"hazard": hazard,
+						"mitigation": mitigation,
+						"hira": hira if (hira and line) else None,
+						"hira_line": line if hira else None,
+					}
+					for hazard, mitigation, line in values["hazards"]
+				],
+				"rules": [{"kind": kind, "rule": rule} for kind, rule in values["rules"]],
+				"steps": [
+					{
+						"activity": activity,
+						"requirements": requirements,
+						"hazard_impact": hazard_impact,
+						"responsibility": who,
+						"method": how,
+						"remarks": remarks,
+					}
+					for activity, requirements, hazard_impact, who, how, remarks in values["steps"]
+				],
+				"distribution": [
+					{"recipient": recipient, "user": email_for(key), "copies": copies}
+					for recipient, key, copies in values["distribution"]
+				],
+			}
+		).insert(ignore_permissions=True)
+
+
+def _ensure_jhas(sites):
+	"""A Draft JHA for each sample SOP that has been approved and is still in force.
+
+	A JHA needs an approved SOP, so it is made the next time this runs after the SOP has been approved.
+	Its steps come from the SOP, as they do when an officer makes a JHA.
+	"""
+	from krl_hse.utils.review import in_force_names
+
+	for values in JHAS:
+		for sop in frappe.get_all(
+			"HSE SOP", filters={"sop_title": values["sop_title"]}, fields=["name", "document_number"]
+		):
+			if sop.name not in in_force_names("HSE SOP", name=sop.name):
+				print(
+					f"Skipping JHA for {values['sop_title']}: SOP {sop.name} is not approved yet. "
+					"Approve it, then run the load again."
+				)
+				continue
+			if frappe.db.exists("HSE JHA", {"sop_document_number": sop.document_number}):
+				continue
+
+			doc = frappe.get_doc({"doctype": "HSE JHA", "sop": sop.name, "jha_title": values["sop_title"]})
+			doc.analysis_team = []
+			for name, role in values["team"]:
+				doc.append("analysis_team", {"person_name": name, "role": role})
+			for name, role in values["consulted"]:
+				doc.append("employees_consulted", {"person_name": name, "role": role})
+			for resource, qty in values["resources"]:
+				doc.append("resources", {"resource": resource, "qty": qty})
+			for topic, for_whom in values["training"]:
+				doc.append("training", {"topic": topic, "for_whom": for_whom})
+
+			# The steps are those of the SOP, filled in when the document is made.
+			doc.insert(ignore_permissions=True)
+			step_refs = [row.step_ref for row in doc.steps]
+			for number, (step, hazard, impact, controls) in enumerate(values["hazards"], start=1):
+				if step > len(step_refs):
+					continue
+				ref = f"H{number}"
+				doc.append("hazards", {"step_ref": step_refs[step - 1], "hazard": hazard, "impact": impact})
+				for control, level in controls:
+					doc.append("controls", {"hazard_ref": ref, "control": control, "hierarchy_level": level})
+			doc.save(ignore_permissions=True)
+
+
 def clear(delete=0):
 	"""Archive the demo data: cancel work orders, disable areas and users.
 
@@ -409,14 +904,14 @@ def clear(delete=0):
 	"""
 	delete = int(delete)
 
-	# Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
+	# JHAs, SOPs, HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
 	# cannot be archived, so without delete=1 they are left as they are.
 	if delete:
-		for name in frappe.get_all(
-			"HSE Method Statement", filters={"name_of_work": ["like", "TEST%"]}, pluck="name"
-		):
-			frappe.db.set_value("HSE Method Statement", name, "workflow_state", "Draft")
-			frappe.delete_doc("HSE Method Statement", name, force=True, ignore_permissions=True)
+		# A JHA goes before its SOP, and a SOP and a HIRA before the Method Statement they belong to.
+		for doctype in ("HSE JHA", "HSE SOP", "HSE HIRA", "HSE Method Statement"):
+			for name in frappe.get_all(doctype, filters={"name_of_work": ["like", "TEST%"]}, pluck="name"):
+				frappe.db.set_value(doctype, name, "workflow_state", "Draft")
+				frappe.delete_doc(doctype, name, force=True, ignore_permissions=True)
 
 	for name in frappe.get_all("HSE Workplace Area", filters={"area_name": ["like", "TEST%"]}, pluck="name"):
 		if delete:
