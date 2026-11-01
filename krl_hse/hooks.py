@@ -154,6 +154,7 @@ hse_branch_doctypes = [
 	"HSE Method Statement",
 	"HSE HIRA",
 	"HSE SOP",
+	"HSE JHA",
 ]
 
 # Planning documents with revisions and a lifecycle (krl_hse/utils/controlled_document.py). Each
@@ -162,6 +163,7 @@ hse_controlled_doctypes = [
 	"HSE Method Statement",
 	"HSE HIRA",
 	"HSE SOP",
+	"HSE JHA",
 ]
 
 # Document types that are reviewed on a schedule, and the date field that says when. The daily job in

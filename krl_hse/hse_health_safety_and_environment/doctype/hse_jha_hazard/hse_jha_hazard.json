@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 21:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "hazard_ref",
+  "step_ref",
+  "hazard",
+  "impact",
+  "details_section",
+  "source",
+  "environment",
+  "column_break_description",
+  "cause",
+  "trigger_condition",
+  "origin_section",
+  "hira",
+  "hira_line"
+ ],
+ "fields": [
+  {
+   "fieldname": "hazard_ref",
+   "fieldtype": "Data",
+   "label": "Hazard",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "Given when the hazard is saved. A control measure refers to it."
+  },
+  {
+   "fieldname": "step_ref",
+   "fieldtype": "Select",
+   "label": "Step",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "hazard",
+   "fieldtype": "Small Text",
+   "label": "Potential Hazard",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "impact",
+   "fieldtype": "Small Text",
+   "label": "Impact of the Hazard",
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Description of the Hazard"
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Data",
+   "label": "Source"
+  },
+  {
+   "fieldname": "environment",
+   "fieldtype": "Small Text",
+   "label": "Environment"
+  },
+  {
+   "fieldname": "column_break_description",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cause",
+   "fieldtype": "Small Text",
+   "label": "Causes"
+  },
+  {
+   "fieldname": "trigger_condition",
+   "fieldtype": "Small Text",
+   "label": "Triggering Conditions"
+  },
+  {
+   "fieldname": "origin_section",
+   "fieldtype": "Section Break",
+   "label": "Where It Came From"
+  },
+  {
+   "fieldname": "hira",
+   "fieldtype": "Link",
+   "label": "HIRA",
+   "options": "HSE HIRA"
+  },
+  {
+   "fieldname": "hira_line",
+   "fieldtype": "Data",
+   "label": "HIRA Line",
+   "description": "For example L3. Filled by Add Hazards from HIRA."
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 21:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE JHA Hazard",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

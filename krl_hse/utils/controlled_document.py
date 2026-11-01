@@ -90,6 +90,11 @@ class ControlledDocument(HSEDocument):
 	def validate_content(self):
 		"""Document-specific checks. Override in the document type."""
 
+	def status_notice(self):
+		"""A warning the form shows above an approved or draft document, for example that a document it
+		depends on is no longer in force. Override in the document type. An empty string shows nothing."""
+		return ""
+
 	def review_problems(self):
 		"""What is still missing before this can be sent for review. Override in the document type."""
 		return []
@@ -327,6 +332,7 @@ def revision_status(doctype, name):
 	review = _review_state(doctype, name)
 	if review:
 		status.update(review)
+	status["notice"] = frappe.get_doc(doctype, name).status_notice() if status["is_latest"] else ""
 	status["can_revise"] = bool(
 		status["is_latest"]
 		and frappe.db.get_value(doctype, name, "workflow_state") == get_approved_state()

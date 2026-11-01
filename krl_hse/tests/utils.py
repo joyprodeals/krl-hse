@@ -214,3 +214,54 @@ def override_review_months(doctype, months):
 		frappe.clear_cache(doctype="HSE Settings")
 
 	return restore
+
+
+def make_approved_sop(branch, method_statement, **kw):
+	"""A SOP already in force, for tests of the documents that depend on it.
+
+	The approval steps themselves are tested with the SOP.
+	"""
+	from krl_hse.utils.controlled_document import get_approved_state
+
+	sop = make_sop(branch, method_statement, **kw)
+	frappe.db.set_value("HSE SOP", sop.name, "workflow_state", get_approved_state())
+	return frappe.get_doc("HSE SOP", sop.name)
+
+
+def jha_hazard(step_ref="A1", **kw):
+	values = {
+		"step_ref": step_ref,
+		"hazard": "TEST: gas leak at the cylinder valve",
+		"impact": "TEST: fire or burns",
+	}
+	values.update(kw)
+	return values
+
+
+def jha_control(hazard_ref="H1", **kw):
+	values = {
+		"hazard_ref": hazard_ref,
+		"control": "TEST: check the joints with soap solution",
+		"hierarchy_level": "Isolation",
+	}
+	values.update(kw)
+	return values
+
+
+def jha_content(**kw):
+	"""The least a JHA needs before it can be sent for review, for a SOP with one step."""
+	values = {
+		"jha_title": "TEST Gas cutting JHA",
+		"analysis_team": [{"person_name": "TEST Gas cutter", "role": "Operator"}],
+		"hazards": [jha_hazard()],
+		"controls": [jha_control()],
+	}
+	values.update(kw)
+	return values
+
+
+def make_jha(branch, sop, **kw):
+	values = jha_content()
+	values.update({"doctype": "HSE JHA", "branch": branch, "sop": sop})
+	values.update(kw)
+	return frappe.get_doc(values).insert(ignore_permissions=True)

@@ -391,6 +391,78 @@ SOPS = [
 DESIGNATIONS = ["TEST Loader Operator", "TEST Fitter", "TEST Store Keeper"]
 
 
+# One JHA for each sample SOP, made once that SOP has been approved. Each hazard names the step of the SOP
+# it belongs to (1 is the first step), and each control measure its level of the hierarchy of control.
+JHAS = [
+	{
+		"sop_title": "TEST Hot slag loading",
+		"team": [("TEST Supervisor", "Supervisor"), ("TEST HSE Officer", "HSE Officer")],
+		"consulted": [("TEST Excavator operator", "Operator"), ("TEST Dumper driver", "Driver")],
+		"resources": [("TEST: excavator", 1), ("TEST: dumper", 2), ("TEST: barricades", 6)],
+		"training": [
+			("TEST: hot slag handling", "pit crew"),
+			("TEST: signals for excavator work", "banksmen"),
+		],
+		"hazards": [
+			(
+				1,
+				"TEST: people too close to the pit side",
+				"TEST: burns or being struck by the excavator",
+				[
+					("TEST: barricade the pit side and post a banksman", "Isolation"),
+					("TEST: only authorised people inside the barricade", "Administrative Control"),
+				],
+			),
+			(
+				2,
+				"TEST: loading before the slag has cooled",
+				"TEST: splash of hot slag, burns",
+				[("TEST: confirm the cooling time with the shift in-charge", "Administrative Control")],
+			),
+			(
+				3,
+				"TEST: splash of hot slag on a worker",
+				"TEST: serious burns",
+				[
+					("TEST: workers stay behind the barricade", "Isolation"),
+					("TEST: heat-resistant suit and face shield", "PPE"),
+				],
+			),
+			(
+				3,
+				"TEST: dust while loading",
+				"TEST: breathing problems",
+				[("TEST: water sprinkling during loading", "Engineering Control")],
+			),
+		],
+	},
+	{
+		"sop_title": "TEST Wheel loader operation in the yard",
+		"team": [("TEST Yard Supervisor", "Supervisor"), ("TEST HSE Officer", "HSE Officer")],
+		"consulted": [("TEST Loader operator", "Operator")],
+		"resources": [("TEST: wheel loader", 1), ("TEST: reverse alarm", 1)],
+		"training": [("TEST: banksman signals", "banksmen")],
+		"hazards": [
+			(
+				1,
+				"TEST: defective brakes or alarm",
+				"TEST: the loader cannot stop or warn people",
+				[("TEST: complete the pre-shift checklist, report defects", "Administrative Control")],
+			),
+			(
+				2,
+				"TEST: moving vehicle close to people",
+				"TEST: a person is hit by the loader",
+				[
+					("TEST: a banksman guides every reversing move", "Administrative Control"),
+					("TEST: reverse alarm and horn working", "Engineering Control"),
+				],
+			),
+		],
+	},
+]
+
+
 def email_for(key):
 	return f"test.{key}@{DOMAIN}"
 
@@ -413,6 +485,7 @@ def load(password=None, branches=None, head_office=None):
 	_ensure_method_statements(sites)
 	_ensure_hiras(sites)
 	_ensure_sops(sites)
+	_ensure_jhas(sites)
 	frappe.db.commit()
 	print(f"Demo data loaded for branches {', '.join(f'{c} ({n})' for c, n in sorted(sites.items()))}.")
 	print(f"Test logins end with @{DOMAIN}.")
@@ -779,6 +852,51 @@ def _ensure_sops(sites):
 		).insert(ignore_permissions=True)
 
 
+def _ensure_jhas(sites):
+	"""A Draft JHA for each sample SOP that has been approved and is still in force.
+
+	A JHA needs an approved SOP, so it is made the next time this runs after the SOP has been approved.
+	Its steps come from the SOP, as they do when an officer makes a JHA.
+	"""
+	from krl_hse.utils.review import in_force_names
+
+	for values in JHAS:
+		for sop in frappe.get_all(
+			"HSE SOP", filters={"sop_title": values["sop_title"]}, fields=["name", "document_number"]
+		):
+			if sop.name not in in_force_names("HSE SOP", name=sop.name):
+				print(
+					f"Skipping JHA for {values['sop_title']}: SOP {sop.name} is not approved yet. "
+					"Approve it, then run the load again."
+				)
+				continue
+			if frappe.db.exists("HSE JHA", {"sop_document_number": sop.document_number}):
+				continue
+
+			doc = frappe.get_doc({"doctype": "HSE JHA", "sop": sop.name, "jha_title": values["sop_title"]})
+			doc.analysis_team = []
+			for name, role in values["team"]:
+				doc.append("analysis_team", {"person_name": name, "role": role})
+			for name, role in values["consulted"]:
+				doc.append("employees_consulted", {"person_name": name, "role": role})
+			for resource, qty in values["resources"]:
+				doc.append("resources", {"resource": resource, "qty": qty})
+			for topic, for_whom in values["training"]:
+				doc.append("training", {"topic": topic, "for_whom": for_whom})
+
+			# The steps are those of the SOP, filled in when the document is made.
+			doc.insert(ignore_permissions=True)
+			step_refs = [row.step_ref for row in doc.steps]
+			for number, (step, hazard, impact, controls) in enumerate(values["hazards"], start=1):
+				if step > len(step_refs):
+					continue
+				ref = f"H{number}"
+				doc.append("hazards", {"step_ref": step_refs[step - 1], "hazard": hazard, "impact": impact})
+				for control, level in controls:
+					doc.append("controls", {"hazard_ref": ref, "control": control, "hierarchy_level": level})
+			doc.save(ignore_permissions=True)
+
+
 def clear(delete=0):
 	"""Archive the demo data: cancel work orders, disable areas and users.
 
@@ -786,11 +904,11 @@ def clear(delete=0):
 	"""
 	delete = int(delete)
 
-	# SOPs, HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
+	# JHAs, SOPs, HIRAs and Method Statements: an approved one cannot be deleted, so it is put back to Draft first. They
 	# cannot be archived, so without delete=1 they are left as they are.
 	if delete:
-		# A SOP and a HIRA go before the Method Statement they belong to.
-		for doctype in ("HSE SOP", "HSE HIRA", "HSE Method Statement"):
+		# A JHA goes before its SOP, and a SOP and a HIRA before the Method Statement they belong to.
+		for doctype in ("HSE JHA", "HSE SOP", "HSE HIRA", "HSE Method Statement"):
 			for name in frappe.get_all(doctype, filters={"name_of_work": ["like", "TEST%"]}, pluck="name"):
 				frappe.db.set_value(doctype, name, "workflow_state", "Draft")
 				frappe.delete_doc(doctype, name, force=True, ignore_permissions=True)

@@ -1,0 +1,49 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 21:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "sop",
+  "reference",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "sop",
+   "fieldtype": "Link",
+   "label": "SOP",
+   "options": "HSE SOP",
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Other SOP Reference",
+   "in_list_view": 1,
+   "columns": 3,
+   "description": "For an SOP that is not in the system, for example an older paper SOP"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks",
+   "in_list_view": 1,
+   "columns": 3
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 21:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE JHA Reference SOP",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

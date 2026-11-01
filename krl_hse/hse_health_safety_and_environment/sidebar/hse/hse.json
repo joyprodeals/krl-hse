@@ -51,6 +51,17 @@
    "type": "Link"
   },
   {
+   "child": 1,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "JHA",
+   "link_to": "HSE JHA",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
    "child": 0,
    "collapsible": 1,
    "icon": "briefcase",
@@ -305,7 +316,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-01 19:30:00.000000",
+ "modified": "2026-11-01 21:10:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE",

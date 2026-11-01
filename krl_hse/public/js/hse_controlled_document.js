@@ -49,6 +49,9 @@ function show_revision_state(frm, status) {
 		);
 	}
 
+	// A warning from the document type itself, for example that the SOP behind a JHA has been replaced.
+	if (status.notice) frm.set_intro(frappe.utils.escape_html(status.notice), "orange");
+
 	frm.add_custom_button(
 		__("All Revisions"),
 		() => frappe.set_route("List", frm.doctype, { document_number: status.document_number }),

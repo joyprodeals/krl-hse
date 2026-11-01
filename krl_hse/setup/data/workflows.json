@@ -541,6 +541,192 @@
      "allow_self_approval": 0
     }
    ]
+  },
+  {
+   "workflow_name": "HSE JHA Approval",
+   "document_type": "HSE JHA",
+   "states": [
+    {
+     "state": "Draft",
+     "style": "Warning",
+     "doc_status": "0",
+     "allow_edit": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team",
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Pending Branch HSE Head Review",
+     "style": "Info",
+     "doc_status": "0",
+     "allow_edit": [
+      "Branch HSE Head",
+      "HSE Head",
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Pending Branch Head Approval",
+     "style": "Info",
+     "doc_status": "0",
+     "allow_edit": [
+      "Branch Head",
+      "HSE Head",
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Pending HO HSE Team Approval",
+     "style": "Info",
+     "doc_status": "0",
+     "allow_edit": [
+      "HO HSE Team",
+      "HSE Head",
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Approved",
+     "style": "Success",
+     "doc_status": "0",
+     "allow_edit": [
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Sent Back",
+     "style": "Danger",
+     "doc_status": "0",
+     "allow_edit": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team",
+      "System Manager"
+     ]
+    },
+    {
+     "state": "Superseded",
+     "style": "Inverse",
+     "doc_status": "0",
+     "allow_edit": [
+      "System Manager"
+     ]
+    }
+   ],
+   "transitions": [
+    {
+     "state": "Draft",
+     "action": "Submit for Review",
+     "next_state": "Pending Branch HSE Head Review",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team"
+     ],
+     "condition": "doc.revision_number == 0"
+    },
+    {
+     "state": "Draft",
+     "action": "Submit for Review",
+     "next_state": "Pending Branch Head Approval",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team"
+     ],
+     "condition": "doc.revision_number > 0"
+    },
+    {
+     "state": "Sent Back",
+     "action": "Submit for Review",
+     "next_state": "Pending Branch HSE Head Review",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team"
+     ],
+     "condition": "doc.revision_number == 0"
+    },
+    {
+     "state": "Sent Back",
+     "action": "Submit for Review",
+     "next_state": "Pending Branch Head Approval",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Officer",
+      "HSE Head",
+      "HO HSE Team"
+     ],
+     "condition": "doc.revision_number > 0"
+    },
+    {
+     "state": "Pending Branch HSE Head Review",
+     "action": "Review and Forward",
+     "next_state": "Pending Branch Head Approval",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    },
+    {
+     "state": "Pending Branch HSE Head Review",
+     "action": "Send Back",
+     "next_state": "Sent Back",
+     "allowed": [
+      "Branch HSE Head",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    },
+    {
+     "state": "Pending Branch Head Approval",
+     "action": "Approve and Forward",
+     "next_state": "Pending HO HSE Team Approval",
+     "allowed": [
+      "Branch Head",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    },
+    {
+     "state": "Pending Branch Head Approval",
+     "action": "Send Back",
+     "next_state": "Sent Back",
+     "allowed": [
+      "Branch Head",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    },
+    {
+     "state": "Pending HO HSE Team Approval",
+     "action": "Approve",
+     "next_state": "Approved",
+     "allowed": [
+      "HO HSE Team",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    },
+    {
+     "state": "Pending HO HSE Team Approval",
+     "action": "Send Back",
+     "next_state": "Sent Back",
+     "allowed": [
+      "HO HSE Team",
+      "HSE Head"
+     ],
+     "allow_self_approval": 0
+    }
+   ]
   }
  ]
 }

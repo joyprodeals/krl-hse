@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "creation": "2026-11-01 21:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "field_order": [
+  "hazard_ref",
+  "control",
+  "hierarchy_level"
+ ],
+ "fields": [
+  {
+   "fieldname": "hazard_ref",
+   "fieldtype": "Select",
+   "label": "Hazard",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "control",
+   "fieldtype": "Small Text",
+   "label": "Safeguard or Control Measure",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 5
+  },
+  {
+   "fieldname": "hierarchy_level",
+   "fieldtype": "Link",
+   "label": "Hierarchy of Control",
+   "options": "HSE Hierarchy of Control",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Needed before the JHA is sent for review"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-01 21:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HSE Health Safety and Environment",
+ "name": "HSE JHA Control",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

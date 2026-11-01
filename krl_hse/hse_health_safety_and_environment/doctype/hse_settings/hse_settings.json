@@ -18,6 +18,7 @@
   "block_high_residual_risk",
   "column_break_planning",
   "review_reminder_days",
+  "jha_per_sop",
   "workflow_section",
   "sent_back_state",
   "approved_state",
@@ -182,7 +183,7 @@
    "options": "Approved only\nAny state\nNot required",
    "default": "Approved only",
    "reqd": 1,
-   "description": "A HIRA belongs to a Method Statement. Approved only: the Method Statement must be approved first (the BRD rule). Any state: a draft Method Statement is enough. Not required: a HIRA can be made without one."
+   "description": "A HIRA and a SOP belong to a Method Statement, and a JHA to a SOP. Approved only: the parent must be approved first (the BRD rule), and a SOP must also be in force (not expired) for a new JHA. Any state: a draft is enough, so the documents can be prepared together as a set. Not required: a HIRA or SOP can be made without a Method Statement. A JHA always needs a SOP."
   },
   {
    "fieldname": "block_high_residual_risk",
@@ -201,11 +202,20 @@
    "default": "30",
    "description": "How many days before the review date (1 or more) the Branch HSE Head is reminded. The review period of each document is in the Document Codes above.",
    "reqd": 1
+  },
+  {
+   "fieldname": "jha_per_sop",
+   "fieldtype": "Select",
+   "label": "JHAs for Each SOP",
+   "options": "One for each SOP\nMore than one allowed",
+   "default": "One for each SOP",
+   "reqd": 1,
+   "description": "One for each SOP: a SOP has a single JHA, and a change is made as a revision of it. More than one allowed: a SOP can have several JHAs, for example one for each shift or area."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-01 20:00:00.000000",
+ "modified": "2026-11-01 21:05:00.000000",
  "modified_by": "Administrator",
  "module": "HSE Health Safety and Environment",
  "name": "HSE Settings",
