@@ -10,16 +10,17 @@ app_license = "custom"
 
 required_apps = ["erpnext"]
 
-# Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "krl_hse",
-# 		"logo": "/assets/krl_hse/logo.png",
-# 		"title": "KRL HSE",
-# 		"route": "/krl_hse",
-# 		"has_permission": "krl_hse.api.permission.has_app_permission",
-# 	}
-# ]
+# Show KRL HSE on the Frappe v16 Apps screen
+add_to_apps_screen = [
+    {
+        "name": "krl_hse",
+        "logo": "/assets/krl_hse/images/krl-hse-logo.svg",
+        "title": "KRL HSE",
+        "route": "/desk/hse-settings",
+        "has_permission": "krl_hse.utils.app_permission.has_app_permission",
+        "sequence_id": 30,
+    }
+]
 
 # The dock, the rail down the left of the desk, is a document rather than a hook. Author it in
 # Manage Dock on a developer-mode site and press Export to App, and it is written to
